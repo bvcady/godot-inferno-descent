@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="RectangleShape2D" id=1]
+resource_name = "WallCollision"
+extents = Vector2( 15, 15 )
+
+[node name="Wall" type="StaticBody2D" groups=["Walls"]]
+position = Vector2( -22, -22 )
+z_index = 1
+z_as_relative = false
+collision_layer = 255
+
+[node name="TempBG" type="ColorRect" parent="."]
+margin_right = 32.0
+margin_bottom = 32.0
+color = Color( 0.176471, 0.176471, 0.176471, 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 16, 16 )
+shape = SubResource( 1 )
+one_way_collision_margin = 0.0

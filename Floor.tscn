@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Floor.gd" type="Script" id=2]
+
+[node name="Floor" type="CanvasLayer"]
+follow_viewport_enable = true
+script = ExtResource( 2 )
+
+[node name="StartPosition" type="Position2D" parent="."]
+position = Vector2( 160, 160 )
+
+[node name="FloorBox" type="ColorRect" parent="."]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+color = Color( 0.482353, 0.482353, 0.482353, 1 )

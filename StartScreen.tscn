@@ -1,7 +1,26 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://StartScreen.gd" type="Script" id=1]
 [ext_resource path="res://sprites/story-images.png" type="Texture" id=2]
+[ext_resource path="res://PlayerCharacter.tscn" type="PackedScene" id=3]
+[ext_resource path="res://fonts/SofiaSansCondensed-Medium.ttf" type="DynamicFontData" id=4]
+[ext_resource path="res://default_theme.tres" type="Theme" id=5]
+[ext_resource path="res://RichTextLabel.gd" type="Script" id=6]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 72, 13 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 12, 24 )
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 72, 13 )
+
+[sub_resource type="DynamicFont" id=4]
+font_data = ExtResource( 4 )
+
+[sub_resource type="DynamicFont" id=5]
+font_data = ExtResource( 4 )
 
 [node name="StartScreen" type="CanvasLayer"]
 script = ExtResource( 1 )
@@ -11,10 +30,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -160.0
-margin_top = -160.0
-margin_right = 160.0
-margin_bottom = 160.0
+margin_left = -510.0
+margin_top = -458.0
+margin_right = 490.0
+margin_bottom = 542.0
 color = Color( 0.0509804, 0.0509804, 0.0509804, 1 )
 
 [node name="TextureRect" type="TextureRect" parent="."]
@@ -31,14 +50,39 @@ texture = ExtResource( 2 )
 expand = true
 stretch_mode = 4
 
-[node name="StartButton" type="Button" parent="."]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -36.0
-margin_top = 88.0
-margin_right = 36.0
-margin_bottom = 108.0
+[node name="PlayerCharacter" parent="." instance=ExtResource( 3 )]
+position = Vector2( 168, 172 )
 
-[connection signal="pressed" from="StartButton" to="." method="_on_StartButton_pressed"]
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 200, 193 )
+shape = SubResource( 2 )
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 260, 156 )
+shape = SubResource( 3 )
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 140, 156 )
+shape = SubResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2( 200, 119 )
+shape = SubResource( 1 )
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+margin_top = 215.0
+margin_right = 400.0
+margin_bottom = 255.0
+grow_horizontal = 2
+rect_clip_content = false
+theme = ExtResource( 5 )
+custom_fonts/mono_font = SubResource( 4 )
+custom_fonts/normal_font = SubResource( 5 )
+bbcode_enabled = true
+bbcode_text = "[center]press [SPACE] to start[/center]"
+tab_size = 2
+text = "press [SPACE] to start"
+scroll_following = true
+script = ExtResource( 6 )
