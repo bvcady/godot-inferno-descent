@@ -51,7 +51,7 @@ expand = true
 stretch_mode = 4
 
 [node name="PlayerCharacter" parent="." instance=ExtResource( 3 )]
-position = Vector2( 168, 172 )
+position = Vector2( 166, 166 )
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 

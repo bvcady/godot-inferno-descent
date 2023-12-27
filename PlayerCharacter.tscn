@@ -93,7 +93,7 @@ animations = [ {
 
 [sub_resource type="RectangleShape2D" id=12]
 resource_name = "PlayerCollision"
-extents = Vector2( 13, 13 )
+extents = Vector2( 14, 14 )
 
 [sub_resource type="GDScript" id=13]
 script/source = "extends Camera2D
@@ -120,14 +120,13 @@ collision_layer = 255
 script = ExtResource( 2 )
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-position = Vector2( 0, -8 )
+position = Vector2( 0, -4 )
 z_index = 2
 z_as_relative = false
 frames = SubResource( 11 )
 animation = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2( 0, -8 )
 z_as_relative = false
 shape = SubResource( 12 )
 
@@ -135,5 +134,5 @@ shape = SubResource( 12 )
 current = true
 process_mode = 0
 smoothing_enabled = true
-smoothing_speed = 6.0
+smoothing_speed = 3.0
 script = SubResource( 13 )

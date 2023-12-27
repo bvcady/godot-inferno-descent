@@ -13,4 +13,4 @@ position = Vector2( 160, 160 )
 visible = false
 margin_right = 40.0
 margin_bottom = 40.0
-color = Color( 0.482353, 0.482353, 0.482353, 1 )
+color = Color( 0.654902, 0.654902, 0.654902, 1 )

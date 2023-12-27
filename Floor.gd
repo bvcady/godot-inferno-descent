@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-const window_size = Vector2(640/32, 640/32)
+const level_size = Vector2(10, 10)
 var location = Vector2(0, 0);
 
 func _ready():
@@ -9,7 +9,7 @@ func _ready():
 	
 func _add_floor():
 	pass
-	$FloorBox.rect_size = window_size*32
+	$FloorBox.rect_size = level_size*32
 	$FloorBox.show()
 	
 func _add_wall(pos):
@@ -19,11 +19,12 @@ func _add_wall(pos):
 	
 func _add_player():
 	var player = preload("res://PlayerCharacter.tscn").instance()
-	player.position = $StartPosition.position
+	player.position = $StartPosition.position + Vector2(16,16)
 	print(player.position)
 	player.z_index = player.position.y
 	add_child(player)
-	player.show()
+	print(level_size*32)
+	player.start(Vector2(level_size.x * 32,  level_size.y * 32))
 	
 func _add_lava(pos):
 	var lava = preload("res://Lava.tscn").instance()
@@ -36,8 +37,8 @@ func _generate_floor():
 	var lavaTiles = []
 	var possiblePlayerTiles = []
 	
-	for tile in range(window_size.x * window_size.y):
-		var tileVector = Vector2(int(floor(tile/window_size.x)), tile % int(floor(window_size.x)))
+	for tile in range(level_size.x * level_size.y):
+		var tileVector = Vector2(int(floor(tile/level_size.x)), tile % int(floor(level_size.x)))
 		if randi() % 10 >= 5:  
 			walledTiles.append(tileVector)
 		elif randi() % 30 >= 6: 

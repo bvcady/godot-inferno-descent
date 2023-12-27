@@ -1,14 +1,11 @@
 extends KinematicBody2D
 
 export var speed = 64 # How fast the player will move (pixels/sec).
-var screen_size # Size of the game window.
+var screen_size = Vector2(400, 300)
 var tilePosition = Vector2.ZERO;
 var is_moving = false;
 
-func _ready():
-	screen_size = Vector2.ZERO;
-	screen_size.x = 320;
-	screen_size.y = 320;
+func _ready():		
 	$AnimatedSprite.animation = "idle"
 	$AnimatedSprite.play()
 	
@@ -49,13 +46,16 @@ func _physics_process(delta):
 		move_and_slide(velocity)
 		for i in get_slide_count(): 
 			var collision = get_slide_collision(i)
-			print ("I collided with ", collision.get_collider().name)
+			print(collision.position, screen_size)
 
-	var min_wall_distance = 8
-	position.x = clamp(position.x, min_wall_distance, screen_size.x - min_wall_distance)
-	position.y = clamp(position.y, min_wall_distance, screen_size.y - min_wall_distance)
+	var min_wall_distance = 0;
+	position.x = int(clamp(position.x, min_wall_distance, screen_size.x - min_wall_distance))
+	position.y = int(clamp(position.y, min_wall_distance, screen_size.y - min_wall_distance))
 	
-func start():
+func start(floor_size):
+	if(floor_size):
+		screen_size = floor_size
+	else: 
+		screen_size = Vector2(400, 300)
 	show();
-	$CollisionShape2D.disabled = false
 
