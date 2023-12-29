@@ -1,12 +1,16 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=3 uid="uid://ec6jkkvwpris"]
 
-[sub_resource type="CanvasItemMaterial" id=1]
+[ext_resource type="Script" path="res://ColorRect.gd" id="2"]
+
+[sub_resource type="CanvasItemMaterial" id="1"]
 blend_mode = 3
+light_mode = 1
 
 [node name="ColorOverlay" type="CanvasLayer"]
 
 [node name="ColorRect" type="ColorRect" parent="."]
-material = SubResource( 1 )
-margin_right = 400.0
-margin_bottom = 300.0
-color = Color( 0.698039, 0.835294, 1, 1 )
+material = SubResource("1")
+offset_right = 400.0
+offset_bottom = 300.0
+color = Color(0.552941, 0.12549, 0, 1)
+script = ExtResource("2")

@@ -1,0 +1,9 @@
+res://default_env.tres
+res://Main.tscn
+res://default_theme.tres
+res://RichTextLabel.gd
+res://ColorOverlay.tscn
+res://PlayerCharacter.tscn
+res://Floor.tscn
+res://StartScreen.tscn
+res://Wall.tscn

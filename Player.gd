@@ -1,61 +1,82 @@
-extends KinematicBody2D
+extends CharacterBody2D
 
-export var speed = 64 # How fast the player will move (pixels/sec).
+var speed = 48
+var move_distance = 32 # Distance the player moves on each key press.
 var screen_size = Vector2(400, 300)
-var tilePosition = Vector2.ZERO;
-var is_moving = false;
+var target_position = Vector2.ZERO
+var moving = false
 
-func _ready():		
-	$AnimatedSprite.animation = "idle"
-	$AnimatedSprite.play()
-	
-
+func _ready():
+	$AnimatedSprite2D.animation = "idle"
+	$AnimatedSprite2D.play()
+	target_position = position
 
 func _physics_process(delta):
+	handle_input()
 
-	var velocity = Vector2.ZERO # The player's movement vector.
-	if Input.is_action_pressed("move_right"):
-		is_moving = true;		
-		velocity.x = 1
-	if Input.is_action_pressed("move_left"):
-		is_moving = true;
-		velocity.x = -1
-	if Input.is_action_pressed("move_down"):
-		is_moving = true;		
-		velocity.y = 1
-	if Input.is_action_pressed("move_up"):
-		is_moving = true;		
-		velocity.y = -1
+	if moving:
+		move_towards_target(delta)
+		update_animation()
 
-	if velocity.length() > 0:
-		velocity = velocity.normalized() * speed
+	confine_to_screen_bounds()
+	$AnimatedSprite2D.z_index = position.y
 
-	if velocity.x != 0:
-		$AnimatedSprite.animation = "right"
-		$AnimatedSprite.flip_v = false
-		$AnimatedSprite.flip_h = velocity.x < 0
-	elif velocity.y != 0:
-		if velocity.y < 0:
-			$AnimatedSprite.animation = "up"
-		elif velocity.y > 0:
-			$AnimatedSprite.animation = 'down'
-	elif velocity.x == 0 && velocity.y == 0:
-		$AnimatedSprite.animation = 'idle'
+func handle_input():
+	if not moving:
+		var direction = Vector2.ZERO
+		if Input.is_action_just_pressed("move_right"):
+			direction.x = 1
+		elif Input.is_action_just_pressed("move_left"):
+			direction.x = -1
+		elif Input.is_action_just_pressed("move_down"):
+			direction.y = 1
+		elif Input.is_action_just_pressed("move_up"):
+			direction.y = -1
 		
-	if(velocity.length() > 0):	
-		move_and_slide(velocity)
-		for i in get_slide_count(): 
-			var collision = get_slide_collision(i)
-			print(collision.position, screen_size)
+		if direction != Vector2.ZERO:
+			target_position = position + direction * move_distance
+			moving = true
 
-	var min_wall_distance = 0;
-	position.x = int(clamp(position.x, min_wall_distance, screen_size.x - min_wall_distance))
-	position.y = int(clamp(position.y, min_wall_distance, screen_size.y - min_wall_distance))
-	
+func move_towards_target(delta):
+	var direction = (target_position - position).normalized()
+	var move_step = speed * delta
+	var distance_to_target = position.distance_to(target_position)
+		
+	confine_to_screen_bounds()
+		
+	if distance_to_target > move_step:
+		var collision = move_and_collide(direction * move_step)
+		if collision:
+			moving = false
+	else:
+		position = target_position
+		moving = false
+	position.round()
+
+func update_animation():
+	if moving:
+		var direction = (target_position - position).normalized()
+		if direction.x != 0:
+			$AnimatedSprite2D.animation = "right"
+			$AnimatedSprite2D.flip_h = direction.x < 0
+		else:
+			if(direction.y < 0):
+				$AnimatedSprite2D.animation = 'up'
+			else: 
+				$AnimatedSprite2D.animation = "down"
+	else:
+		$AnimatedSprite2D.animation = 'idle'
+
+func confine_to_screen_bounds():
+	var min_wall_distance = 16
+	position.x = clamp(position.x, min_wall_distance, screen_size.x - min_wall_distance)
+	position.y = clamp(position.y, min_wall_distance, screen_size.y - min_wall_distance)
+	if position.x <= min_wall_distance or position.x >= screen_size.x - min_wall_distance or position.y <= min_wall_distance or position.y >= screen_size.y - min_wall_distance:
+		moving = false
+
 func start(floor_size):
-	if(floor_size):
+	if floor_size:
 		screen_size = floor_size
-	else: 
+	else:
 		screen_size = Vector2(400, 300)
-	show();
-
+	show()

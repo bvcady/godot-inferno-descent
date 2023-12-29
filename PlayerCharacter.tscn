@@ -1,101 +1,132 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=18 format=3 uid="uid://cqcbkh53cbjwd"]
 
-[ext_resource path="res://sprites/new-sprite-player.png" type="Texture" id=1]
-[ext_resource path="res://Player.gd" type="Script" id=2]
+[ext_resource type="Texture2D" uid="uid://dm1hqp28yhm4u" path="res://sprites/new-sprite-player.png" id="1"]
+[ext_resource type="Script" path="res://Player.gd" id="2"]
 
-[sub_resource type="AtlasTexture" id=1]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 256, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="1"]
+atlas = ExtResource("1")
+region = Rect2(256, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id=2]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 288, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="2"]
+atlas = ExtResource("1")
+region = Rect2(288, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id=3]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 320, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="3"]
+atlas = ExtResource("1")
+region = Rect2(320, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id=4]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 352, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="4"]
+atlas = ExtResource("1")
+region = Rect2(352, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id=5]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 0, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="5"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id=6]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 32, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="6"]
+atlas = ExtResource("1")
+region = Rect2(32, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id=7]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 384, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="7"]
+atlas = ExtResource("1")
+region = Rect2(384, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id=8]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 416, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="8"]
+atlas = ExtResource("1")
+region = Rect2(416, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id=9]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 448, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="9"]
+atlas = ExtResource("1")
+region = Rect2(448, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id=10]
-flags = 4
-atlas = ExtResource( 1 )
-region = Rect2( 480, 0, 32, 32 )
+[sub_resource type="AtlasTexture" id="10"]
+atlas = ExtResource("1")
+region = Rect2(480, 0, 32, 32)
 
-[sub_resource type="SpriteFrames" id=11]
-animations = [ {
-"frames": [ SubResource( 1 ), SubResource( 2 ), SubResource( 3 ), SubResource( 4 ) ],
+[sub_resource type="SpriteFrames" id="11"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("1")
+}, {
+"duration": 1.0,
+"texture": SubResource("2")
+}, {
+"duration": 1.0,
+"texture": SubResource("3")
+}, {
+"duration": 1.0,
+"texture": SubResource("4")
+}],
 "loop": true,
-"name": "down",
+"name": &"down",
 "speed": 4.0
 }, {
-"frames": [  ],
+"frames": [],
 "loop": true,
-"name": "down slide",
+"name": &"down slide",
 "speed": 8.0
 }, {
-"frames": [ SubResource( 5 ), SubResource( 6 ) ],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("5")
+}, {
+"duration": 1.0,
+"texture": SubResource("6")
+}],
 "loop": true,
-"name": "idle",
+"name": &"idle",
 "speed": 2.0
 }, {
-"frames": [ SubResource( 7 ), SubResource( 8 ) ],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("7")
+}, {
+"duration": 1.0,
+"texture": SubResource("8")
+}],
 "loop": true,
-"name": "right",
+"name": &"right",
 "speed": 4.0
 }, {
-"frames": [  ],
+"frames": [],
 "loop": true,
-"name": "right slide",
+"name": &"right slide",
 "speed": 8.0
 }, {
-"frames": [ SubResource( 9 ), SubResource( 10 ) ],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("9")
+}, {
+"duration": 1.0,
+"texture": SubResource("10")
+}],
 "loop": true,
-"name": "up",
+"name": &"up",
 "speed": 4.0
 }, {
-"frames": [  ],
+"frames": [],
 "loop": true,
-"name": "up slide",
+"name": &"up slide",
 "speed": 8.0
-} ]
+}]
 
-[sub_resource type="RectangleShape2D" id=12]
+[sub_resource type="RectangleShape2D" id="12"]
 resource_name = "PlayerCollision"
-extents = Vector2( 14, 14 )
+size = Vector2(31.8, 31.8)
 
-[sub_resource type="GDScript" id=13]
+[sub_resource type="Gradient" id="14"]
+offsets = PackedFloat32Array(0, 0.381924)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="15"]
+gradient = SubResource("14")
+width = 400
+height = 400
+fill = 1
+fill_from = Vector2(0.50625, 0.458333)
+
+[sub_resource type="GDScript" id="13"]
 script/source = "extends Camera2D
 
 
@@ -114,25 +145,37 @@ func _ready():
 #	pass
 "
 
-[node name="PlayerCharacter" type="KinematicBody2D"]
-z_as_relative = false
+[node name="PlayerCharacter" type="CharacterBody2D"]
 collision_layer = 255
-script = ExtResource( 2 )
+script = ExtResource("2")
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
-position = Vector2( 0, -4 )
-z_index = 2
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_as_relative = false
-frames = SubResource( 11 )
-animation = "idle"
+position = Vector2(0, -9)
+sprite_frames = SubResource("11")
+animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 z_as_relative = false
-shape = SubResource( 12 )
+shape = SubResource("12")
 
-[node name="Main Camera" type="Camera2D" parent="."]
-current = true
-process_mode = 0
-smoothing_enabled = true
-smoothing_speed = 3.0
-script = SubResource( 13 )
+[node name="SpriteLight" type="PointLight2D" parent="."]
+position = Vector2(2.08165e-12, -5)
+energy = 0.34
+range_layer_max = 12
+texture = SubResource("15")
+
+[node name="ShadowLight" type="PointLight2D" parent="."]
+position = Vector2(0, -8)
+energy = 1.13
+range_layer_max = 12
+shadow_enabled = true
+shadow_filter = 2
+shadow_filter_smooth = 0.8
+shadow_item_cull_mask = 2
+texture = SubResource("15")
+
+[node name="Main Camera3D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 2.5
+script = SubResource("13")

@@ -11,10 +11,10 @@ z_as_relative = false
 collision_layer = 255
 
 [node name="TempBG" type="ColorRect" parent="."]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 28.0
-margin_bottom = 28.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 28.0
+offset_bottom = 28.0
 color = Color( 1, 0.215686, 0.215686, 1 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
