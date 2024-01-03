@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://mm6uobet65dc"]
+[gd_scene load_steps=5 format=3 uid="uid://mm6uobet65dc"]
 
 [ext_resource type="PackedScene" uid="uid://kr7lelci46gg" path="res://Floor.tscn" id="1"]
 [ext_resource type="Script" path="res://Main.gd" id="2"]
 [ext_resource type="PackedScene" uid="uid://2ejh4xrc78qa" path="res://StartScreen.tscn" id="3"]
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_i6mdu"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("2")
@@ -14,10 +16,13 @@ offset_right = 400.0
 offset_bottom = 300.0
 color = Color(0, 0, 0, 1)
 
-[node name="Floor" parent="." instance=ExtResource("1")]
-
 [node name="StartScreen" parent="." instance=ExtResource("3")]
 follow_viewport_enabled = true
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("CanvasTexture_i6mdu")
+
+[node name="Floor" parent="." instance=ExtResource("1")]
 
 [connection signal="initialize_floor" from="." to="Floor" method="_generate_floor"]
 [connection signal="start_game" from="StartScreen" to="." method="_new_game"]

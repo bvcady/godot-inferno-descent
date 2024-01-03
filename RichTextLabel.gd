@@ -12,6 +12,6 @@ func _ready():
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	visible_ratio += 0.03
 	visible_ratio = clamp(visible_ratio, 0, 1)

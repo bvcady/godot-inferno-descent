@@ -1,1 +1,10 @@
 DirectionalLight2D
+ColorRect
+CanvasLayer
+Node
+Node2D
+StaticBody2D
+Sprite2D
+AudioStreamPlayer
+AudioListener2D
+PointLight2D

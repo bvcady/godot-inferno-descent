@@ -12,5 +12,5 @@ light_mode = 1
 material = SubResource("1")
 offset_right = 400.0
 offset_bottom = 300.0
-color = Color(0.552941, 0.12549, 0, 1)
+color = Color(0.917647, 0.592157, 0.439216, 1)
 script = ExtResource("2")

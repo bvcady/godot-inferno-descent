@@ -1,29 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://kr7lelci46gg"]
+[gd_scene load_steps=2 format=3 uid="uid://kr7lelci46gg"]
 
-[ext_resource type="PackedScene" uid="uid://ec6jkkvwpris" path="res://ColorOverlay.tscn" id="1"]
 [ext_resource type="Script" path="res://Floor.gd" id="2"]
 
-[node name="Floor" type="CanvasLayer"]
+[node name="CanvasLayer" type="CanvasLayer"]
 follow_viewport_enabled = true
 script = ExtResource("2")
 
-[node name="StartPosition" type="Marker2D" parent="."]
-position = Vector2(160, 160)
-
 [node name="FloorBox" type="ColorRect" parent="."]
-light_mask = 2
 offset_right = 40.0
 offset_bottom = 40.0
-color = Color(0.654902, 0.654902, 0.654902, 1)
+color = Color(0.486275, 0.486275, 0.486275, 1)
 
-[node name="ColorOverlay" parent="." instance=ExtResource("1")]
-follow_viewport_scale = 0.001
-
-[node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
-color = Color(0.988235, 0.933333, 0.937255, 1)
-energy = 1.06
+[node name="Dimmed" type="DirectionalLight2D" parent="."]
+light_mask = 3
+color = Color(0.85098, 0.85098, 0.85098, 1)
+energy = 1.12
 blend_mode = 1
-range_layer_min = 1
-range_layer_max = 1
-range_item_cull_mask = 2
-height = 0.36
+range_layer_max = 5

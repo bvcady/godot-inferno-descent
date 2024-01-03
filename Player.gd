@@ -1,17 +1,20 @@
-extends CharacterBody2D
+extends StaticBody2D
 
+const cell_size = 32
 var speed = 48
-var move_distance = 32 # Distance the player moves on each key press.
+var move_distance = cell_size # Distance the player moves on each key press.
 var screen_size = Vector2(400, 300)
 var target_position = Vector2.ZERO
 var moving = false
+var current_floor
 
 func _ready():
+	current_floor = get_parent()
 	$AnimatedSprite2D.animation = "idle"
 	$AnimatedSprite2D.play()
 	target_position = position
 
-func _physics_process(delta):
+func _physics_process(delta):	
 	handle_input()
 
 	if moving:
@@ -19,10 +22,10 @@ func _physics_process(delta):
 		update_animation()
 
 	confine_to_screen_bounds()
-	$AnimatedSprite2D.z_index = position.y
+
 
 func handle_input():
-	if not moving:
+	if (not moving):
 		var direction = Vector2.ZERO
 		if Input.is_action_just_pressed("move_right"):
 			direction.x = 1
@@ -33,10 +36,14 @@ func handle_input():
 		elif Input.is_action_just_pressed("move_up"):
 			direction.y = -1
 		
-		if direction != Vector2.ZERO:
-			target_position = position + direction * move_distance
-			moving = true
+		if (direction != Vector2.ZERO):
+			print(current_floor)
+			if(current_floor && current_floor.has_method("_is_valid_move")):
+				if current_floor._is_valid_move(position/cell_size + direction):
+					target_position = position + direction * move_distance
+					moving = true
 
+		
 func move_towards_target(delta):
 	var direction = (target_position - position).normalized()
 	var move_step = speed * delta
@@ -68,7 +75,7 @@ func update_animation():
 		$AnimatedSprite2D.animation = 'idle'
 
 func confine_to_screen_bounds():
-	var min_wall_distance = 16
+	var min_wall_distance = 0
 	position.x = clamp(position.x, min_wall_distance, screen_size.x - min_wall_distance)
 	position.y = clamp(position.y, min_wall_distance, screen_size.y - min_wall_distance)
 	if position.x <= min_wall_distance or position.x >= screen_size.x - min_wall_distance or position.y <= min_wall_distance or position.y >= screen_size.y - min_wall_distance:
