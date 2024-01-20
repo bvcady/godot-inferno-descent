@@ -3,25 +3,32 @@ extends StaticBody2D
 const cell_size = 32
 var speed = 48
 var move_distance = cell_size # Distance the player moves on each key press.
-var screen_size = Vector2(400, 300)
+var screen_size 
 var target_position = Vector2.ZERO
 var moving = false
 var current_floor
 
 func _ready():
-	current_floor = get_parent()
+	screen_size = get_viewport_rect().size
+	show();
+	current_floor = get_parent().get_parent()
 	$AnimatedSprite2D.animation = "idle"
 	$AnimatedSprite2D.play()
 	target_position = position
 
 func _physics_process(delta):	
+	var lavaMaterial = load('res://Lava.tres')
+	var relativePosition = position / screen_size;
+	lavaMaterial.set_shader_parameter("camera_pos", relativePosition)
+	
 	handle_input()
+	
+	$"Main Camera".position = floor($"Main Camera".position)
 
 	if moving:
 		move_towards_target(delta)
 		update_animation()
 
-	confine_to_screen_bounds()
 
 
 func handle_input():
@@ -37,9 +44,8 @@ func handle_input():
 			direction.y = -1
 		
 		if (direction != Vector2.ZERO):
-			print(current_floor)
 			if(current_floor && current_floor.has_method("_is_valid_move")):
-				if current_floor._is_valid_move(position/cell_size + direction):
+				if current_floor._is_valid_move(round(position/cell_size) + direction):
 					target_position = position + direction * move_distance
 					moving = true
 
@@ -49,12 +55,8 @@ func move_towards_target(delta):
 	var move_step = speed * delta
 	var distance_to_target = position.distance_to(target_position)
 		
-	confine_to_screen_bounds()
-		
 	if distance_to_target > move_step:
-		var collision = move_and_collide(direction * move_step)
-		if collision:
-			moving = false
+		position += move_step * direction
 	else:
 		position = target_position
 		moving = false

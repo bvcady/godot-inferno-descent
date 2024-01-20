@@ -1,37 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://c3tvdl1u3ixgy"]
 
 [ext_resource type="Script" path="res://Wall.gd" id="1"]
-
-[sub_resource type="Shader" id="Shader_pk6jt"]
-code = "shader_type canvas_item;
-
-uniform vec4 lightest : source_color;
-uniform vec4 light : source_color;
-uniform vec4 medium : source_color;
-uniform vec4 dark : source_color;
-uniform vec4 darkest : source_color;
-uniform vec4 black : source_color;
-
-void fragment() {
-	COLOR = texture(SCREEN_TEXTURE, SCREEN_UV);
-	float rgb_avg = (COLOR.r + COLOR.g + COLOR.b) / 3.0;
-	if (rgb_avg < .16) {
-		COLOR = black
-	} else if (rgb_avg < .32) {
-		COLOR = darkest;
-	} else if (rgb_avg < .48) {
-		COLOR = dark;	
-	} else if (rgb_avg < .64) {
-		COLOR = medium;		
-	} else if (rgb_avg < .82) {
-		COLOR = light;
-	} else {
-		COLOR = lightest;
-	}
-}"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_cmjmh"]
-shader = SubResource("Shader_pk6jt")
+[ext_resource type="Texture2D" uid="uid://bub1qj87pnvj6" path="res://sprites/walls.png" id="2_4q82h"]
+[ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://GB_Material.tres" id="3_7k0ot"]
 
 [sub_resource type="OccluderPolygon2D" id="2"]
 cull_mode = 1
@@ -39,40 +10,46 @@ polygon = PackedVector2Array(30, 29, 30, 1, 2, 1, 2, 29)
 
 [node name="Wall" type="StaticBody2D" groups=["Walls"]]
 z_as_relative = false
-material = SubResource("ShaderMaterial_cmjmh")
+material = ExtResource("3_7k0ot")
 position = Vector2(-16, -32)
 collision_layer = 255
 script = ExtResource("1")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="High" type="Sprite2D" parent="."]
+visible = false
 z_as_relative = false
 y_sort_enabled = true
-position = Vector2(2.08165e-12, 2.08165e-12)
+use_parent_material = true
+position = Vector2(16, 6)
+texture = ExtResource("2_4q82h")
+offset = Vector2(2.08165e-12, 2.08165e-12)
+region_enabled = true
+region_rect = Rect2(80, 28, 32, 52)
 
-[node name="Base" type="ColorRect" parent="Sprite2D" groups=["Wall"]]
+[node name="Middle" type="Sprite2D" parent="."]
+visible = false
 z_as_relative = false
-anchors_preset = -1
-anchor_left = 2.0
-anchor_top = -12.0
-anchor_right = 30.0
-anchor_bottom = 30.0
-color = Color(0.505882, 0.505882, 0.505882, 1)
-metadata/_edit_use_anchors_ = true
+y_sort_enabled = true
+use_parent_material = true
+position = Vector2(16, 8)
+texture = ExtResource("2_4q82h")
+region_enabled = true
+region_rect = Rect2(16, 32, 32, 48)
 
-[node name="Top" type="ColorRect" parent="Sprite2D" groups=["Wall"]]
-light_mask = 4
+[node name="Low" type="Sprite2D" parent="."]
+visible = false
 z_as_relative = false
-anchors_preset = -1
-anchor_left = 2.0
-anchor_top = -12.0
-anchor_right = 30.0
-anchor_bottom = 8.0
-color = Color(0.239216, 0.239216, 0.239216, 1)
-metadata/_edit_use_anchors_ = true
+y_sort_enabled = true
+use_parent_material = true
+position = Vector2(16, 8)
+texture = ExtResource("2_4q82h")
+region_enabled = true
+region_rect = Rect2(48, 32, 32, 48)
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+show_behind_parent = true
+top_level = true
 light_mask = 3
-position = Vector2(0, 1)
+position = Vector2(-16, -31)
 occluder = SubResource("2")
 sdf_collision = false
-occluder_light_mask = 2

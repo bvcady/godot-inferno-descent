@@ -1,9 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://cqcbkh53cbjwd"]
+[gd_scene load_steps=19 format=3 uid="uid://cqcbkh53cbjwd"]
 
 [ext_resource type="Texture2D" uid="uid://dm1hqp28yhm4u" path="res://sprites/new-sprite-player.png" id="1"]
+[ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://GB_Material.tres" id="1_6ukha"]
 [ext_resource type="Script" path="res://Player.gd" id="2"]
 [ext_resource type="Texture2D" uid="uid://dlgqx6k1lshat" path="res://LightGradient.tres" id="3_ydlll"]
 [ext_resource type="Texture2D" uid="uid://dp5biiqwut6jd" path="res://ShadowCasting.tres" id="4_mu06r"]
+[ext_resource type="Script" path="res://Main Camera.gd" id="5_4ku5i"]
 
 [sub_resource type="AtlasTexture" id="1"]
 atlas = ExtResource("1")
@@ -113,63 +115,59 @@ animations = [{
 "speed": 8.0
 }]
 
-[sub_resource type="GDScript" id="13"]
-script/source = "extends Camera2D
-
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = \"text\"
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-"
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_igbmd"]
+size = Vector2(29, 30)
 
 [node name="PlayerCharacter" type="StaticBody2D"]
 z_as_relative = false
+material = ExtResource("1_6ukha")
+position = Vector2(2.08165e-12, 8)
 collision_layer = 3
 collision_priority = 6.0
 script = ExtResource("2")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-z_as_relative = false
-y_sort_enabled = true
-position = Vector2(2.08165e-12, 2.08165e-12)
-sprite_frames = SubResource("11")
-animation = &"down"
-centered = false
-offset = Vector2(-16, -37)
-
-[node name="SpriteLight" type="PointLight2D" parent="."]
-position = Vector2(0, -16)
-energy = 0.52
-range_layer_max = 12
-shadow_filter = 2
-shadow_filter_smooth = 3.4
-texture = ExtResource("3_ydlll")
-
 [node name="ShadowLight" type="PointLight2D" parent="."]
-position = Vector2(0, -16)
+position = Vector2(16, 12)
 energy = 0.75
 range_layer_max = 12
 range_item_cull_mask = 2
 shadow_enabled = true
 shadow_filter = 2
 shadow_filter_smooth = 0.8
-shadow_item_cull_mask = 2
+shadow_item_cull_mask = 3
 texture = ExtResource("4_mu06r")
 texture_scale = 1.25
 
-[node name="Main Camera3D" type="Camera2D" parent="."]
-position = Vector2(0, -23)
-offset = Vector2(2.08165e-12, 40)
+[node name="SpriteLight" type="PointLight2D" parent="."]
+position = Vector2(16, 12)
+scale = Vector2(0.75, 1)
+skew = -0.020944
+energy = 1.54
+range_layer_max = 12
+shadow_filter = 2
+shadow_filter_smooth = 3.4
+texture = ExtResource("3_ydlll")
+offset = Vector2(2.08165e-12, 11)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_as_relative = false
+y_sort_enabled = true
+use_parent_material = true
+position = Vector2(2.08165e-12, -4)
+sprite_frames = SubResource("11")
+animation = &"down"
+centered = false
+offset = Vector2(2.08165e-12, 2.08165e-12)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(16, 8)
+shape = SubResource("RectangleShape2D_igbmd")
+
+[node name="Main Camera" type="Camera2D" parent="."]
+position = Vector2(18, 13)
+offset = Vector2(2.08165e-12, 32)
+ignore_rotation = false
 position_smoothing_enabled = true
 position_smoothing_speed = 3.5
-script = SubResource("13")
+script = ExtResource("5_4ku5i")

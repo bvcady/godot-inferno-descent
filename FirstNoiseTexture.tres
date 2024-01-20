@@ -1,0 +1,10 @@
+[gd_resource type="NoiseTexture2D" load_steps=2 format=3 uid="uid://b3r6mykpkjdc3"]
+
+[ext_resource type="FastNoiseLite" uid="uid://bhrc5q7evweuw" path="res://FirstLavaNoise.tres" id="1_oqftf"]
+
+[resource]
+width = 300
+height = 300
+seamless = true
+seamless_blend_skirt = 0.157
+noise = ExtResource("1_oqftf")

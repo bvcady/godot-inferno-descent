@@ -1,28 +1,27 @@
-[gd_scene load_steps=5 format=3 uid="uid://mm6uobet65dc"]
+[gd_scene load_steps=6 format=3 uid="uid://mm6uobet65dc"]
 
 [ext_resource type="PackedScene" uid="uid://kr7lelci46gg" path="res://Floor.tscn" id="1"]
 [ext_resource type="Script" path="res://Main.gd" id="2"]
 [ext_resource type="PackedScene" uid="uid://2ejh4xrc78qa" path="res://StartScreen.tscn" id="3"]
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_i6mdu"]
+[ext_resource type="Script" path="res://Floor.gd" id="4_5dmug"]
+[ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://GB_Material.tres" id="5_8ord2"]
 
 [node name="World" type="Node2D"]
+material = ExtResource("5_8ord2")
 script = ExtResource("2")
 
 [node name="Background" type="CanvasLayer" parent="."]
 
 [node name="ColorRect" type="ColorRect" parent="Background"]
-offset_right = 400.0
-offset_bottom = 300.0
+offset_right = 640.0
+offset_bottom = 360.0
 color = Color(0, 0, 0, 1)
 
 [node name="StartScreen" parent="." instance=ExtResource("3")]
 follow_viewport_enabled = true
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = SubResource("CanvasTexture_i6mdu")
-
 [node name="Floor" parent="." instance=ExtResource("1")]
+script = ExtResource("4_5dmug")
 
 [connection signal="initialize_floor" from="." to="Floor" method="_generate_floor"]
 [connection signal="start_game" from="StartScreen" to="." method="_new_game"]

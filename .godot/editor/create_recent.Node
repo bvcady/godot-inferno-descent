@@ -1,9 +1,13 @@
-DirectionalLight2D
 ColorRect
+TextureRect
+AnimatedSprite2D
+StaticBody2D
+CollisionShape2D
+CanvasGroup
+Node2D
+DirectionalLight2D
 CanvasLayer
 Node
-Node2D
-StaticBody2D
 Sprite2D
 AudioStreamPlayer
 AudioListener2D

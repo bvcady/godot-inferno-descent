@@ -19,8 +19,8 @@ config/features=PackedStringArray("4.2")
 window/size/viewport_width=400
 window/size/viewport_height=300
 window/size/always_on_top=true
-window/size/window_width_override=1200
-window/size/window_height_override=900
+window/size/window_width_override=800
+window/size/window_height_override=600
 window/energy_saving/keep_screen_on=false
 window/stretch/mode="viewport"
 window/handheld/orientation="portrait"
@@ -29,6 +29,10 @@ window/handheld/orientation="portrait"
 
 version_control_autoload_on_startup=true
 version_control_plugin_name="GitAPI"
+
+[editor_plugins]
+
+enabled=PackedStringArray()
 
 [gdnative]
 

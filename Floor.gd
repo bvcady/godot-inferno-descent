@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-const level_size = Vector2(8, 8)
+const level_size = Vector2(32, 32)
 const cell_size = Vector2(32,32)
 var location = Vector2(0, 0);
 var grid = []
@@ -15,8 +15,12 @@ func world_to_grid(world_position):
 	)
 
 func _is_valid_move(target_cell):
-	target_cell.x >= 0 && target_cell.x < level_size.x && target_cell.y >= 0 && target_cell.y < level_size.y && grid[target_cell.y][target_cell.x] == 'empty'  # Assuming 0 is empty
-
+	var valid_tile = target_cell.x >= 0 && target_cell.x < level_size.x && target_cell.y >= 0 && target_cell.y < level_size.y
+	if valid_tile:
+		if(grid[target_cell.y][target_cell.x] != 'wall'):
+			return true
+	return false
+	
 func grid_to_world(grid_position):
 	return Vector2(
 		grid_position.x * cell_size.x,
@@ -37,12 +41,17 @@ func _add_wall(pos):
 	var wall = preload("res://Wall.tscn").instantiate()
 	grid[pos.y][pos.x] = 'wall'
 	wall.position = pos*cell_size
-	add_child(wall)
+	var skeleton = preload("res://Skeleton.tscn").instantiate()
+
+	if(randi()%30 == 29 ):
+		wall.add_child(skeleton)
+		
+	$DrawGroup.add_child(wall)
 	
 func _add_player(initial_position):
 	var player = preload("res://PlayerCharacter.tscn").instantiate()
-	player.position = initial_position + Vector2(16,0)
-	add_child(player)
+	player.position = initial_position*cell_size 
+	$DrawGroup.add_child(player)
 
 	player.start(Vector2(level_size.x * cell_size.x,  level_size.y * cell_size.y))
 	
@@ -50,7 +59,7 @@ func _add_lava(pos):
 	var lava = preload("res://Lava.tscn").instantiate()
 	grid[pos.y][pos.x] = 'lava'
 	lava.position = pos*cell_size
-	add_child(lava)
+	$DrawGroup.add_child(lava)
 	
 func _generate_floor():
 	_add_floor()
@@ -62,7 +71,7 @@ func _generate_floor():
 		var tileVector = Vector2(int(floor(tile/level_size.x)), tile % int(floor(level_size.x)))
 		if randi() % 10 >= 5:  
 			walledTiles.append(tileVector)
-		elif randi() % 30 >= 6: 
+		elif randi() % 30 >= 15: 
 			lavaTiles.append(tileVector)	
 		else:
 			possiblePlayerTiles.append(tileVector)			
@@ -75,4 +84,4 @@ func _generate_floor():
 		
 	possiblePlayerTiles.shuffle()
 	
-	_add_player(possiblePlayerTiles[0]*cell_size);
+	_add_player(possiblePlayerTiles[0]);

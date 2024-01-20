@@ -1,15 +1,21 @@
-[gd_scene load_steps=2 format=3 uid="uid://kr7lelci46gg"]
+[gd_scene load_steps=3 format=3 uid="uid://kr7lelci46gg"]
 
-[ext_resource type="Script" path="res://Floor.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://ec6jkkvwpris" path="res://ColorOverlay.tscn" id="1_ilar2"]
+[ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://GB_Material.tres" id="1_uy53f"]
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="Floor" type="CanvasLayer"]
 follow_viewport_enabled = true
-script = ExtResource("2")
 
 [node name="FloorBox" type="ColorRect" parent="."]
+material = ExtResource("1_uy53f")
 offset_right = 40.0
 offset_bottom = 40.0
-color = Color(0.486275, 0.486275, 0.486275, 1)
+
+[node name="FloorGroup" type="CanvasGroup" parent="."]
+y_sort_enabled = true
+
+[node name="DrawGroup" type="CanvasGroup" parent="."]
+y_sort_enabled = true
 
 [node name="Dimmed" type="DirectionalLight2D" parent="."]
 light_mask = 3
@@ -17,3 +23,6 @@ color = Color(0.85098, 0.85098, 0.85098, 1)
 energy = 1.12
 blend_mode = 1
 range_layer_max = 5
+
+[node name="ColorOverlay" parent="." instance=ExtResource("1_ilar2")]
+visible = false
