@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://kr7lelci46gg"]
+
+[ext_resource type="Script" path="res://main/Floor.gd" id="1_byahf"]
+[ext_resource type="PackedScene" uid="uid://cqcbkh53cbjwd" path="res://main/components/player/PlayerCharacter.tscn" id="3_uv3oh"]
+
+[node name="Floor" type="CanvasLayer"]
+follow_viewport_enabled = true
+script = ExtResource("1_byahf")
+
+[node name="BG" type="CanvasLayer" parent="."]
+layer = 0
+
+[node name="ColorRect" type="ColorRect" parent="BG"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0509804, 0.0509804, 0.0509804, 1)
+
+[node name="FloorGroup" type="CanvasGroup" parent="."]
+y_sort_enabled = true
+
+[node name="DrawGroup" type="CanvasGroup" parent="."]
+y_sort_enabled = true
+
+[node name="PlayerCharacter" parent="DrawGroup" instance=ExtResource("3_uv3oh")]
+visible = false
+position = Vector2(0, 384)
+normalPosition = Vector2(0, 12)

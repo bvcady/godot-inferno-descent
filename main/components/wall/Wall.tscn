@@ -1,0 +1,55 @@
+[gd_scene load_steps=5 format=3 uid="uid://c3tvdl1u3ixgy"]
+
+[ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://main/components/shaders/GB_Material.tres" id="1_m4cf3"]
+[ext_resource type="Script" path="res://main/components/wall/Wall.gd" id="2_ioqwb"]
+[ext_resource type="Texture2D" uid="uid://bub1qj87pnvj6" path="res://sprites/walls.png" id="3_2yruo"]
+
+[sub_resource type="OccluderPolygon2D" id="2"]
+cull_mode = 1
+polygon = PackedVector2Array(30, 29, 30, 1, 2, 1, 2, 29)
+
+[node name="Wall" type="StaticBody2D" groups=["Walls"]]
+z_as_relative = false
+material = ExtResource("1_m4cf3")
+position = Vector2(-16, -32)
+collision_layer = 255
+script = ExtResource("2_ioqwb")
+
+[node name="High" type="Sprite2D" parent="."]
+visible = false
+z_as_relative = false
+y_sort_enabled = true
+use_parent_material = true
+position = Vector2(16, 6)
+texture = ExtResource("3_2yruo")
+offset = Vector2(2.08165e-12, 2.08165e-12)
+region_enabled = true
+region_rect = Rect2(80, 28, 32, 52)
+
+[node name="Middle" type="Sprite2D" parent="."]
+visible = false
+z_as_relative = false
+y_sort_enabled = true
+use_parent_material = true
+position = Vector2(16, 8)
+texture = ExtResource("3_2yruo")
+region_enabled = true
+region_rect = Rect2(16, 32, 32, 48)
+
+[node name="Low" type="Sprite2D" parent="."]
+visible = false
+z_as_relative = false
+y_sort_enabled = true
+use_parent_material = true
+position = Vector2(16, 8)
+texture = ExtResource("3_2yruo")
+region_enabled = true
+region_rect = Rect2(48, 32, 32, 48)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+show_behind_parent = true
+top_level = true
+light_mask = 3
+position = Vector2(-16, -31)
+occluder = SubResource("2")
+sdf_collision = false

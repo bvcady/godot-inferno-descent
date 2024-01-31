@@ -1,0 +1,29 @@
+[gd_resource type="ShaderMaterial" load_steps=5 format=3 uid="uid://tfth52erdnrm"]
+
+[ext_resource type="Shader" path="res://main/components/lava/Lava.gdshader" id="1_xs4jd"]
+[ext_resource type="Texture2D" uid="uid://b3r6mykpkjdc3" path="res://main/components/lava/FirstNoiseTexture.tres" id="2_0ogo2"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qc827"]
+frequency = 0.0237
+fractal_ping_pong_strength = 1.94
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_oa05c"]
+seamless = true
+noise = SubResource("FastNoiseLite_qc827")
+
+[resource]
+shader = ExtResource("1_xs4jd")
+shader_parameter/seed = 0.0
+shader_parameter/scrollSpeed = Vector2(0.01, 0.01)
+shader_parameter/secondaryScrollSpeed = Vector2(0.02, 0.02)
+shader_parameter/lightest = Color(0.952941, 0.847059, 0.847059, 1)
+shader_parameter/light = Color(0.937255, 0.101961, 0.101961, 1)
+shader_parameter/dark = Color(0.67451, 0.0901961, 0.0901961, 1)
+shader_parameter/darkest = Color(0.105882, 0.101961, 0.113725, 1)
+shader_parameter/lightestThreshold = 0.58
+shader_parameter/lightThreshold = 0.76
+shader_parameter/darkThreshold = 0.97
+shader_parameter/rotationSpeed = 10.0
+shader_parameter/noise = ExtResource("2_0ogo2")
+shader_parameter/secondaryNoise = ExtResource("2_0ogo2")
+shader_parameter/tertiaryNoise = SubResource("NoiseTexture2D_oa05c")

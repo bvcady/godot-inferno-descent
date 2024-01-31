@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://5a7vnghd0mvm"]
+
+[ext_resource type="Script" path="res://main/guis/player_info.gd" id="1_a21aj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7wa01"]
+bg_color = Color(0.717647, 0.490196, 0.843137, 1)
+skew = Vector2(2.08165e-12, 2.08165e-12)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pbvlh"]
+bg_color = Color(0, 0.521569, 1, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="PlayerInfo" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_a21aj")
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+light_mask = 512
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 45.0
+offset_bottom = 10.0
+theme_override_styles/background = SubResource("StyleBoxFlat_7wa01")
+theme_override_styles/fill = SubResource("StyleBoxFlat_pbvlh")
+max_value = 10.0
+step = 1.0
+page = 1.0
+value = 9.0
+show_percentage = false

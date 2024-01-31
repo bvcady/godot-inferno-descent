@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://ec6jkkvwpris"]
+
+[ext_resource type="Script" path="res://main/components/shaders/ColorRect.gd" id="1_gkdnp"]
+
+[sub_resource type="CanvasItemMaterial" id="1"]
+blend_mode = 3
+light_mode = 1
+
+[node name="ColorOverlay" type="CanvasLayer"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("1")
+offset_right = 400.0
+offset_bottom = 300.0
+color = Color(0.647059, 0.729412, 0.352941, 1)
+script = ExtResource("1_gkdnp")

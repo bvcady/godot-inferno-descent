@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://i527h5sw36xo"]
+
+[ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://main/components/shaders/GB_Material.tres" id="1_hbod7"]
+[ext_resource type="Script" path="res://main/components/floor/Floor.gd" id="2_5ne6q"]
+[ext_resource type="Texture2D" uid="uid://k01xffcei6ci" path="res://sprites/floor.png" id="3_aw66n"]
+
+[node name="Floor" type="StaticBody2D" groups=["Walls"]]
+z_as_relative = false
+material = ExtResource("1_hbod7")
+position = Vector2(-16, -32)
+collision_layer = 255
+script = ExtResource("2_5ne6q")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+visible = false
+offset_right = 32.0
+offset_bottom = 32.0
+color = Color(0.152941, 0.152941, 0.266667, 1)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = ExtResource("1_hbod7")
+custom_minimum_size = Vector2(2.08165e-12, 2.08165e-12)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("3_aw66n")
+expand_mode = 1

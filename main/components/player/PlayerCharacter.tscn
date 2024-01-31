@@ -1,0 +1,170 @@
+[gd_scene load_steps=18 format=3 uid="uid://cqcbkh53cbjwd"]
+
+[ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://main/components/shaders/GB_Material.tres" id="1_bdbw6"]
+[ext_resource type="Script" path="res://main/components/player/Player.gd" id="2_6x6eg"]
+[ext_resource type="Texture2D" uid="uid://dp5biiqwut6jd" path="res://main/components/player/ShadowCasting.tres" id="3_j60iv"]
+[ext_resource type="Texture2D" uid="uid://dlgqx6k1lshat" path="res://main/components/player/LightGradient.tres" id="4_i30td"]
+[ext_resource type="Texture2D" uid="uid://dm1hqp28yhm4u" path="res://sprites/new-sprite-player.png" id="5_efgsr"]
+[ext_resource type="Script" path="res://main/components/player/Main Camera.gd" id="6_u7tcu"]
+
+[sub_resource type="AtlasTexture" id="1"]
+atlas = ExtResource("5_efgsr")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="2"]
+atlas = ExtResource("5_efgsr")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="3"]
+atlas = ExtResource("5_efgsr")
+region = Rect2(320, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="4"]
+atlas = ExtResource("5_efgsr")
+region = Rect2(352, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="5"]
+atlas = ExtResource("5_efgsr")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="6"]
+atlas = ExtResource("5_efgsr")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="7"]
+atlas = ExtResource("5_efgsr")
+region = Rect2(384, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="8"]
+atlas = ExtResource("5_efgsr")
+region = Rect2(416, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="9"]
+atlas = ExtResource("5_efgsr")
+region = Rect2(448, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="10"]
+atlas = ExtResource("5_efgsr")
+region = Rect2(480, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="11"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("1")
+}, {
+"duration": 1.0,
+"texture": SubResource("2")
+}, {
+"duration": 1.0,
+"texture": SubResource("3")
+}, {
+"duration": 1.0,
+"texture": SubResource("4")
+}],
+"loop": true,
+"name": &"down",
+"speed": 4.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"down slide",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("5")
+}, {
+"duration": 1.0,
+"texture": SubResource("6")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 2.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("7")
+}, {
+"duration": 1.0,
+"texture": SubResource("8")
+}],
+"loop": true,
+"name": &"right",
+"speed": 4.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"right slide",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("9")
+}, {
+"duration": 1.0,
+"texture": SubResource("10")
+}],
+"loop": true,
+"name": &"up",
+"speed": 4.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"up slide",
+"speed": 8.0
+}]
+
+[node name="PlayerCharacter" type="Node2D"]
+z_as_relative = false
+material = ExtResource("1_bdbw6")
+position = Vector2(2.08165e-12, 8)
+script = ExtResource("2_6x6eg")
+
+[node name="ShadowLight" type="PointLight2D" parent="."]
+visible = false
+position = Vector2(16, 12)
+energy = 0.75
+range_layer_max = 12
+range_item_cull_mask = 2
+shadow_enabled = true
+shadow_filter = 2
+shadow_filter_smooth = 0.8
+shadow_item_cull_mask = 3
+texture = ExtResource("3_j60iv")
+texture_scale = 1.25
+
+[node name="SpriteLight" type="PointLight2D" parent="."]
+visible = false
+position = Vector2(16, 12)
+scale = Vector2(0.75, 1)
+skew = -0.020944
+energy = 1.13
+blend_mode = 2
+range_layer_max = 12
+shadow_filter = 2
+shadow_filter_smooth = 3.4
+texture = ExtResource("4_i30td")
+offset = Vector2(2.08165e-12, 11)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+z_as_relative = false
+y_sort_enabled = true
+use_parent_material = true
+position = Vector2(2.08165e-12, -4)
+sprite_frames = SubResource("11")
+animation = &"down"
+centered = false
+offset = Vector2(2.08165e-12, 2.08165e-12)
+
+[node name="Main Camera" type="Camera2D" parent="."]
+position = Vector2(18, 13)
+offset = Vector2(2.08165e-12, 32)
+ignore_rotation = false
+position_smoothing_enabled = true
+position_smoothing_speed = 2.5
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.08
+drag_top_margin = 0.11
+script = ExtResource("6_u7tcu")
