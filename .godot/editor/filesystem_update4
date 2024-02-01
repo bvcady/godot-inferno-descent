@@ -16,3 +16,5 @@ res://main/generators/Floor.tscn
 res://main/generators/StartingArea.tscn
 res://main/components/wall/Wall.tscn
 res://main/components/player/PlayerCharacter.tscn
+res://main/generators/StartingArea.gd
+res://main/components/player/Player.gd

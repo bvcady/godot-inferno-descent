@@ -135,6 +135,7 @@ texture = ExtResource("3_j60iv")
 texture_scale = 1.25
 
 [node name="SpriteLight" type="PointLight2D" parent="."]
+visible = false
 position = Vector2(16, 11)
 scale = Vector2(0.75, 1)
 skew = -0.020944
