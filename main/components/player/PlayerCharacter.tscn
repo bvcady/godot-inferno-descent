@@ -135,17 +135,17 @@ texture = ExtResource("3_j60iv")
 texture_scale = 1.25
 
 [node name="SpriteLight" type="PointLight2D" parent="."]
-visible = false
-position = Vector2(16, 12)
+position = Vector2(16, 11)
 scale = Vector2(0.75, 1)
 skew = -0.020944
-energy = 1.13
+energy = 0.78
 blend_mode = 2
 range_layer_max = 12
 shadow_filter = 2
 shadow_filter_smooth = 3.4
 texture = ExtResource("4_i30td")
 offset = Vector2(2.08165e-12, 11)
+texture_scale = 1.95
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_as_relative = false

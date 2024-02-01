@@ -2,7 +2,7 @@
 
 [resource]
 noise_type = 2
-seed = -113147233
+seed = -1804032772
 frequency = 0.1317
 offset = Vector3(2.08167e-14, 2.08167e-14, 2.08167e-14)
 fractal_type = 3

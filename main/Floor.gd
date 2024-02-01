@@ -2,7 +2,7 @@
 
 extends CanvasLayer
 
-const level_size = Vector2(16, 16)
+const level_size = Vector2(5, 5)
 const cell_size = Vector2(32,32)
 var location = Vector2(0, 0);
 var grid = [];

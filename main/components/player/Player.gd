@@ -52,7 +52,9 @@ func handle_input():
 		
 		if (direction != Vector2.ZERO):
 			if(current_floor && current_floor.has_method("_is_valid_move")):
-				var t_tile =round(position/cell_size) + direction
+				var t_tile = round(position/cell_size) + direction
+				print(current_floor.grid[t_tile.y][t_tile.x])
+				print(t_tile)
 				if current_floor._is_valid_move(t_tile):
 					var d = + Vector2(randf_range(-2.0, 2.0), randf_range(-3.0, 3.0));
 					var t_p = t_tile * move_distance;

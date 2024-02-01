@@ -1,3 +1,4 @@
+@tool
 extends StaticBody2D
 
 class_name Wall
@@ -10,14 +11,25 @@ enum Height {Low, Middle, High}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	$High.hide()
+	$Middle.hide()
+	$Low.hide()
 	_defineWallHeight()
 	pass
 
 func _defineWallHeight():
+	
+	if noiseVal > 0.85 : 
+		height = Height.High
+	elif noiseVal > 0.7 : 
+		height = Height.Middle
+	else:
+		height = Height.Low
+		
 	if(height == Height.High):
 		$High.show();
 		return
-	if(height == Height.Middle):
+	elif(height == Height.Middle):
 		$Middle.show();
 		return
 	else: 

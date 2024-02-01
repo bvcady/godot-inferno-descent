@@ -30,6 +30,7 @@ window/handheld/orientation="portrait"
 
 [editor]
 
+movie_writer/movie_file="/Users/bobverheij/Documents/Prive/inferno-descent/movies/example.avi"
 version_control_autoload_on_startup=true
 version_control_plugin_name="GitAPI"
 

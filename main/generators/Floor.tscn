@@ -26,5 +26,5 @@ y_sort_enabled = true
 
 [node name="PlayerCharacter" parent="DrawGroup" instance=ExtResource("3_uv3oh")]
 visible = false
-position = Vector2(0, 384)
-normalPosition = Vector2(0, 12)
+position = Vector2(32, 96)
+normalPosition = Vector2(1, 3)
