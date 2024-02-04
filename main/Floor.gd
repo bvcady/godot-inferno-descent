@@ -95,7 +95,7 @@ func _add_player(initial_position):
 	player.normalPosition = initial_position
 	player.position = initial_position*cell_size 
 
-	player.start(Vector2(level_size.x * cell_size.x,  level_size.y * cell_size.y))
+	#player.start(Vector2(level_size.x * cell_size.x,  level_size.y * cell_size.y))
 	
 func _add_lava(pos):
 	_add_floor(pos)

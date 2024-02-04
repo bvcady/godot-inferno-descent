@@ -20,12 +20,22 @@ func _ready():
 	$AnimatedSprite2D.animation = "idle"
 	$AnimatedSprite2D.play()
 	target_position = position
+	
+func _input(event):
+	if event is InputEventMouseButton && event.is_released():
+		if ($"Main Camera".zoom.x == 0.125):
+			$SpriteLight.show()
+			$"Main Camera".zoom = Vector2(1, 1)
+		else:
+			$SpriteLight.hide()			
+			$"Main Camera".zoom = Vector2(0.125, 0.125)
+		
 
 func _physics_process(delta):	
 	var lavaMaterial = load('res://main/components/lava/Lava.tres')
 	var relativePosition = position / screen_size;
 	lavaMaterial.set_shader_parameter("camera_pos", relativePosition)
-	
+
 	handle_input()
 	
 	$"Main Camera".position = floor($"Main Camera".position)
