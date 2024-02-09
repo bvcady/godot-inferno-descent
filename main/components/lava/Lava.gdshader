@@ -40,7 +40,7 @@ void fragment () {
 	float isHidden = 0.0;
 		
 	if (outerLimit < 1.0) {
-			if(tertiary_noise_col.x +  0.25 > outerLimit){
+			if(tertiary_noise_col.x +  0.2 > outerLimit){
 				isHidden = 1.0;
 			}
 	}

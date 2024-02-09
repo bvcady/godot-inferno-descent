@@ -80,7 +80,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 2.0
+"speed": 4.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -138,14 +138,14 @@ texture_scale = 1.25
 position = Vector2(16, 11)
 scale = Vector2(0.75, 1)
 skew = -0.020944
-energy = 0.78
+energy = 1.01
 blend_mode = 2
 range_layer_max = 12
 shadow_filter = 2
 shadow_filter_smooth = 3.4
 texture = ExtResource("4_i30td")
 offset = Vector2(2.08165e-12, 11)
-texture_scale = 1.95
+texture_scale = 1.43
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 z_as_relative = false
@@ -153,7 +153,7 @@ y_sort_enabled = true
 use_parent_material = true
 position = Vector2(2.08165e-12, -4)
 sprite_frames = SubResource("11")
-animation = &"down"
+animation = &"idle"
 centered = false
 offset = Vector2(2.08165e-12, 2.08165e-12)
 
@@ -162,7 +162,7 @@ position = Vector2(18, 13)
 offset = Vector2(2.08165e-12, 32)
 ignore_rotation = false
 position_smoothing_enabled = true
-position_smoothing_speed = 2.5
+position_smoothing_speed = 1.5
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
 drag_left_margin = 0.08

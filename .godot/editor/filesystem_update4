@@ -1,7 +1,9 @@
 res://main/default_env.tres
 res://main/generators/StartingArea.tscn
 res://main/components/wall/Wall.gd
+res://main/generators/AreaShape.gd
 res://main/components/wall/WallsNoise.tres
+res://path_noise.tres
 res://main/components/shaders/GBShader.gdshader
 res://main/components/shaders/GB_Material.tres
 res://main/Floor.gd
@@ -9,11 +11,12 @@ res://main/components/lava/Lava.gdshader
 res://main/components/lava/FirstLavaNoise.tres
 res://main/components/lava/FirstNoiseTexture.tres
 res://main/components/lava/Lava.tres
-res://main/components/wall/DynamicWall.gdshader
+res://main/default_theme.tres
 res://main/components/player/ShadowCasting.tres
 res://main/components/player/LightGradient.tres
-res://main/generators/StartingArea.gd
-res://path_noise.tres
-res://main/components/wall/DynamicWall.tscn
-res://main/generators/Floor.tscn
+res://main/components/wall/DynamicWall.gdshader
+res://main/Main.tscn
 res://main/components/player/PlayerCharacter.tscn
+res://main/components/player/Player.gd
+res://main/generators/StartingArea.gd
+res://main/components/lava/Lava.tscn

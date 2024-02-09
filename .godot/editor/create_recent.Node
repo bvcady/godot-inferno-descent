@@ -1,6 +1,8 @@
-ColorRect
+CanvasGroup
+Button
 TextureRect
 CanvasLayer
+ColorRect
 Node2D
 ProgressBar
 MarginContainer
@@ -11,4 +13,3 @@ ShapeCast2D
 Node
 HBoxContainer
 VBoxContainer
-Control
