@@ -1,5 +1,5 @@
 extends CanvasLayer
-var GRID_WIDTH = 120;
+var GRID_WIDTH = 100;
 var GRID_HEIGHT = 100;
 var level_size = Vector2(GRID_WIDTH, GRID_HEIGHT)
 const cell_size = Vector2(32,32)
@@ -14,7 +14,7 @@ var pathNoise;
 var displacement = 0.02;
 var displacementNoise = FastNoiseLite.new();
 var _scale = Vector2(10, 10);
-var n_rooms = 20
+var n_rooms = 1
 var endGoal = Vector2(0, 0);
 
 
@@ -50,6 +50,9 @@ func _ready():
 	pathNoise = preload("res://path_noise.tres")
 	pathNoise.seed = randi();
 	
+	
+	n_rooms = int (GRID_HEIGHT * GRID_WIDTH / 500)
+
 	for i in n_rooms: 
 		_generate_floor()
 	
@@ -57,13 +60,17 @@ func _ready():
 	
 	_add_tiles();
 
-	var possible_steps = find_shortest_path(possiblePlayerTiles[0],endGoal)
-	for step in possible_steps:
-		var c = ColorRect.new()
-		c.position = step*  cell_size + Vector2(14, 14)
-		c.size = Vector2(4, 4);
-		c.color = Color.AQUA
-		$StepGroup.add_child(c)
+	if(possiblePlayerTiles.size()):
+		var possible_steps = find_shortest_path(possiblePlayerTiles[0],endGoal, grid)
+		for step in possible_steps:
+			var c = ColorRect.new()
+			c.position = step*  cell_size + Vector2(14, 14)
+			c.size = Vector2(4, 4);
+			c.color = Color.AQUA
+			$StepGroup.add_child(c)
+	
+	print(placedAreas)
+	print(placedAreas.size())
 		
 	
 
@@ -89,17 +96,17 @@ func get_movement_range(start: Vector2, max_distance: int):
 				var nx = position.x + direction[0]
 				var ny = position.y + direction[1]
 				var next_position = Vector2(nx, ny)
-				if is_valid(next_position) and not visited.has(next_position):
+				if is_valid(next_position, grid) and not visited.has(next_position):
 					visited[next_position] = true
 					queue.push_back([next_position, distance + 1])
 	return visited
 
-func is_valid(pos: Vector2):
+func is_valid(pos: Vector2, temp_grid):
 	var x = pos.x;
 	var y = pos.y;
-	return x >= 0 and x < GRID_WIDTH and y >= 0 and y < GRID_HEIGHT and grid[y][x].has('type') and grid[y][x].type != "wall" and grid[y][x]['accessible'] == true
+	return x >= 0 and x < GRID_WIDTH and y >= 0 and y < GRID_HEIGHT and temp_grid[y][x].has('type') and temp_grid[y][x].type != "wall" and temp_grid[y][x]['accessible'] == true
 
-func find_shortest_path(start: Vector2, goal: Vector2):
+func find_shortest_path(start: Vector2, goal: Vector2, temp_grid):
 	var directions = [Vector2(0, 1), Vector2(1, 0), Vector2(0, -1), Vector2(-1, 0)]  # Right, Down, Left, Up
 	var queue = [start]
 	var visited = {}
@@ -109,15 +116,13 @@ func find_shortest_path(start: Vector2, goal: Vector2):
 		var current = queue.pop_front()
 		if current == goal:
 			var path = construct_path(visited, goal)	
-			print(path)
 			return path
 
 		for direction in directions:
 			var next_position = current + direction
-			if is_valid(next_position) and not visited.has(next_position):
+			if is_valid(next_position, temp_grid) and not visited.has(next_position):
 				visited[next_position] = current  # Mark current as predecessor of next_position
 				queue.push_back(next_position)
-	print('No valid path')
 	return []  # Return an empty array if no path is found
 	
 func construct_path(visited: Dictionary, goal: Vector2):
@@ -214,32 +219,57 @@ func distance_from_center(a: Vector2, b: Vector2):
 	var center = Vector2(GRID_WIDTH/2, GRID_HEIGHT/2)
 	return center.distance_to(a) < center.distance_to(b)
 	
-func find_random_place(a, b):
+func find_random_place(size: Vector2) -> void:
 	var valid_anchors = []
+	# Step 1: Identify potential anchors
+	for y in GRID_HEIGHT:
+		for x in GRID_WIDTH:
+			if (can_fit_rectangle(x, y, size.x, size.y)):
+				valid_anchors.append(Vector2(x, y))
 
-	if (placedAreas.size() == 0):
-		valid_anchors.append(Vector2(floor(GRID_WIDTH/2), floor(GRID_HEIGHT/2)))
-	else:
-		# Step 1: Identify potential anchors
-		for y in GRID_HEIGHT:
-			for x in GRID_WIDTH:
-				if (can_fit_rectangle(x, y, a, b)):
-					valid_anchors.append(Vector2(x, y))
-	
-
-
-	# Step 3: Random selection
+	# Step 2: Random selection
 	if valid_anchors.size() > 0:
-		valid_anchors.shuffle();
-		var selected_anchor = valid_anchors[0]
-		placedAreas.append({"position": selected_anchor, "area": Vector2(a, b)})
 		
-		# Step 4: Place the rectangles
-		#print('Selected Location ', selected_anchor)
-		return selected_anchor
-	
-	#print('no valid location found')
-	return Vector2(-1, -1)  # No valid position found
+		var valid_location = false;
+		var attempts = 0;
+		
+		while (not valid_location and attempts < 3): 
+			valid_anchors.shuffle()				
+			var option = valid_anchors[0]
+			var temp_grid = grid;
+			for y in range(option.y, option.y + size.y):
+				for x in range(option.x, option.x + size.x):
+					var tileVector = Vector2(x, y)
+					var p = map.get_pixelv(tileVector - option)
+					var avgPixel = p.get_luminance()
+					var alpha = p.a;
+					var curPixel = avgPixel * 255;
+
+					if (curPixel == 0):
+						temp_grid[tileVector.y][tileVector.x].type = 'wall';
+					elif (curPixel > 0 && curPixel < 255 && getNormalizedNoise2d(wallNoise, tileVector) > 0.5):
+						temp_grid[tileVector.y][tileVector.x].type = 'wall';
+					else:
+						if placedAreas.size() == 1:
+							possiblePlayerTiles.append(tileVector)
+						temp_grid[tileVector.y][tileVector.x].type = 'floor'
+					temp_grid[tileVector.y][tileVector.x].isRoom = true;
+					
+			if placedAreas.size() == 1: 		
+				valid_location = true
+				
+			else: 	
+				var pathToOptions = find_shortest_path(possiblePlayerTiles[0], option, temp_grid)
+				valid_location = pathToOptions.size() > 0;
+				attempts += 1;
+				if(attempts == 3 and not valid_location):
+					'Skipping attempt to place room'
+				
+			if(valid_location):
+				endGoal = option
+				location = option
+				grid = temp_grid
+				placedAreas.append({"position": valid_anchors[0], "area": size})
 
 
 func _generate_floor():
@@ -269,40 +299,7 @@ func _generate_floor():
 		var validLocation = false
 		var location = Vector2(-1, -1)
 		var attempts = 0;
-		if(placedAreas.size() == 1):
-			location = find_random_place(mapSize.x, mapSize.y)
-		else: 
-			while (not validLocation and attempts < 3): 
-				var option = find_random_place(mapSize.x, mapSize.y)
-				var pathToOption = find_shortest_path(possiblePlayerTiles[0], option)
-				validLocation = pathToOption.size() > 0;
-				attempts += 1;
-				if(validLocation):
-					endGoal = option
-					location = option;
-			
-		if (location.x == -1 or location.y == -1):
-			return
-		
-		var area = Vector2(mapSize.x + location.x, mapSize.y + location.y)
-
-		for y in range(location.y, area.y):
-			for x in range(location.x, area.x):
-				var tileVector = Vector2(x, y)
-				var p = map.get_pixelv(tileVector - location)
-				var avgPixel = p.get_luminance()
-				var alpha = p.a;
-				var curPixel = avgPixel * 255;
-
-				if (curPixel == 0):
-					grid[tileVector.y][tileVector.x].type = 'wall';
-				elif (curPixel > 0 && curPixel < 255 && getNormalizedNoise2d(wallNoise, tileVector) > 0.5):
-					grid[tileVector.y][tileVector.x].type = 'wall';
-				else:
-					if(placedAreas.size() == 2):
-						possiblePlayerTiles.append(tileVector);
-					grid[tileVector.y][tileVector.x].type = 'floor'
-				grid[tileVector.y][tileVector.x].isRoom = true;
+		find_random_place(mapSize)
 
 func _draw_map ():
 	var img = Image.create(GRID_WIDTH * _scale.x, GRID_HEIGHT * _scale.y, true, Image.FORMAT_RGBA8);
@@ -342,7 +339,8 @@ func _add_tiles ():
 				_add_wall(item.position)
 				
 	possiblePlayerTiles.shuffle();
-	_add_player(possiblePlayerTiles[0])
-	_add_lava(possiblePlayerTiles[1])
+	if(possiblePlayerTiles.size()):
+		_add_player(possiblePlayerTiles[0])
+		_add_lava(possiblePlayerTiles[1])
 	
 	

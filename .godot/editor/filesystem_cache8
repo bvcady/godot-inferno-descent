@@ -1,5 +1,5 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1707478210
+::res://::1707493186
 path_noise.tres::FastNoiseLite::5151624221306973374::1707477708::0::1::::<><>::
 README.md::TextFile::-1::1705342029::0::1::::<><>::
 ::res://addons/::1705343467
@@ -25,45 +25,45 @@ SofiaSansCondensed-Thin.ttf::FontFile::2840253346204958040::1697010837::17038583
 SofiaSansCondensed-ThinItalic.ttf::FontFile::7565461757980585046::1697010837::1703858372::1::::<><>::
 SofiaSansCondensed-VariableFont_wght.ttf::FontFile::891185064348433558::1697010840::1703858372::1::::<><>::
 VT323-Regular.ttf::FontFile::2669099881453740381::1697012328::1703858372::1::::<><>::
-::res://main/::1707478693
-default_env.tres::Environment::8856427562749020245::1707478693::0::1::::<><>::
+::res://main/::1707483673
+default_env.tres::Environment::8856427562749020245::1707483673::0::1::::<><>::
 default_theme.tres::Theme::3179000651220797858::1707477708::0::1::::<><>::uid://bea6xj7wwbwvt::::res://fonts/VT323-Regular.ttf
 Floor.gd::GDScript::-1::1707477708::0::1::::<>CanvasLayer<>::
 Main.gd::GDScript::-1::1705954025::0::1::::<>Node<>::
-Main.tscn::PackedScene::868957336439055944::1707478692::0::1::::<><>::res://main/Main.gd<>uid://dusbgjjj3st3h::::res://main/components/shaders/GB_Material.tres<>uid://17te8mp71vgb::::res://sprites/story-images.png<>uid://e8jmtjuhtntl::::res://sprites/logo_blurred.png<>res://main/start_screen/MainMenu.gd<>uid://blj6w81baf3sg::::res://main/default_theme.tres
+Main.tscn::PackedScene::868957336439055944::1707483567::0::1::::<><>::res://main/Main.gd<>uid://dusbgjjj3st3h::::res://main/components/shaders/GB_Material.tres<>uid://17te8mp71vgb::::res://sprites/story-images.png<>uid://e8jmtjuhtntl::::res://sprites/logo_blurred.png<>res://main/start_screen/MainMenu.gd<>uid://blj6w81baf3sg::::res://main/default_theme.tres
 ::res://main/components/::1706713236
 Skeleton.tscn::PackedScene::8521590703078675593::1705953423::0::1::::<><>::uid://cmq71g7nctaxw::::res://sprites/skeleton.png
 ::res://main/components/floor/::1706775285
 Floor.gd::GDScript::-1::1706719615::0::1::::FloorTile<>StaticBody2D<>::
 Floor.tscn::PackedScene::625139000791661208::1706775285::0::1::::<><>::uid://dusbgjjj3st3h::::res://main/components/shaders/GB_Material.tres<>res://main/components/floor/Floor.gd<>uid://k01xffcei6ci::::res://sprites/floor.png
 ::res://main/components/gui/::1706038023
-::res://main/components/lava/::1707478693
+::res://main/components/lava/::1707484294
 FirstLavaNoise.tres::FastNoiseLite::2913012908799042126::1707477708::0::1::::<><>::
 FirstNoiseTexture.tres::NoiseTexture2D::4388707660383342772::1707477708::0::1::::<><>::uid://bhrc5q7evweuw::::res://main/components/lava/FirstLavaNoise.tres
 Lava.gd::GDScript::-1::1705683420::0::1::::<>StaticBody2D<>::
-Lava.gdshader::Shader::-1::1707478693::0::1::::<><>::
+Lava.gdshader::Shader::-1::1707484294::0::1::::<><>::
 Lava.tres::ShaderMaterial::1345077658927627754::1707477708::0::1::::<><>::res://main/components/lava/Lava.gdshader<>uid://b3r6mykpkjdc3::::res://main/components/lava/FirstNoiseTexture.tres
-Lava.tscn::PackedScene::4415553768809898251::1706724686::0::1::::<><>::res://main/components/lava/Lava.gd<>uid://tfth52erdnrm::::res://main/components/lava/Lava.tres<>res://main/components/lava/LavaRect.gd
+Lava.tscn::PackedScene::4415553768809898251::1707483567::0::1::::<><>::res://main/components/lava/Lava.gd<>uid://tfth52erdnrm::::res://main/components/lava/Lava.tres<>res://main/components/lava/LavaRect.gd
 LavaRect.gd::GDScript::-1::1705950049::0::1::::<>ColorRect<>::
-::res://main/components/player/::1707478692
+::res://main/components/player/::1707483567
 Health.gd::GDScript::-1::1706042459::0::1::::<>Node<>::
 LightGradient.tres::GradientTexture2D::7944739787634729007::1707477708::0::1::::<><>::
 Main Camera.gd::GDScript::-1::1706725389::0::1::::<>Camera2D<>::
 Player.gd::GDScript::-1::1707478118::0::1::::Player<>Node2D<>::
-PlayerCharacter.tscn::PackedScene::5900070611317153723::1707478692::0::1::::<><>::uid://dusbgjjj3st3h::::res://main/components/shaders/GB_Material.tres<>res://main/components/player/Player.gd<>uid://dp5biiqwut6jd::::res://main/components/player/ShadowCasting.tres<>uid://dlgqx6k1lshat::::res://main/components/player/LightGradient.tres<>uid://dm1hqp28yhm4u::::res://sprites/new-sprite-player.png<>res://main/components/player/Main Camera.gd
+PlayerCharacter.tscn::PackedScene::5900070611317153723::1707483567::0::1::::<><>::uid://dusbgjjj3st3h::::res://main/components/shaders/GB_Material.tres<>res://main/components/player/Player.gd<>uid://dp5biiqwut6jd::::res://main/components/player/ShadowCasting.tres<>uid://dlgqx6k1lshat::::res://main/components/player/LightGradient.tres<>uid://dm1hqp28yhm4u::::res://sprites/new-sprite-player.png<>res://main/components/player/Main Camera.gd
 ShadowCasting.tres::GradientTexture2D::8274101487546348617::1707477708::0::1::::<><>::
-::res://main/components/shaders/::1707478693
+::res://main/components/shaders/::1707484294
 ColorOverlay.tscn::PackedScene::286782970646851934::1705953423::0::1::::<><>::res://main/components/shaders/ColorRect.gd
 ColorRect.gd::GDScript::-1::1705659737::0::1::::<>ColorRect<>::
-GBShader.gdshader::Shader::-1::1707478693::0::1::::<><>::
+GBShader.gdshader::Shader::-1::1707484294::0::1::::<><>::
 GB_Material.tres::ShaderMaterial::8600269642229680315::1707477708::0::1::::<><>::res://main/components/shaders/GBShader.gdshader
-::res://main/components/wall/::1707478693
-DynamicWall.gdshader::Shader::-1::1707478693::0::1::::<><>::
+::res://main/components/wall/::1707484294
+DynamicWall.gdshader::Shader::-1::1707484294::0::1::::<><>::
 DynamicWall.tscn::PackedScene::2944508885050504448::1707323644::0::1::::<><>::res://main/components/wall/DynamicWall.gdshader
 Wall.gd::GDScript::-1::1707477708::0::1::::Wall<>StaticBody2D<>::
 Wall.tscn::PackedScene::6778633199676288576::1707470914::0::1::::<><>::uid://dusbgjjj3st3h::::res://main/components/shaders/GB_Material.tres<>res://main/components/wall/Wall.gd<>uid://c30j8acawgtv7::::res://sprites/walls-new.png
 WallsNoise.tres::FastNoiseLite::9059597010836346747::1707477708::0::1::::<><>::
-::res://main/generators/::1707478692
+::res://main/generators/::1707483673
 AreaShape.gd::GDScript::-1::1707477708::0::1::::<>Node2D<>::
 AreaShape.tscn::PackedScene::331040615763801530::1707318215::0::1::::<><>::res://main/generators/AreaShape.gd
 Button.gd::GDScript::-1::1707471881::0::1::::<>Button<>::
@@ -71,8 +71,8 @@ Floor.tscn::PackedScene::738945672889807286::1707323624::0::1::::<><>::res://mai
 FloorMapToggle.gd::GDScript::-1::1707471626::0::1::::<>TextureRect<>::
 Reload.gd::GDScript::-1::1707471892::0::1::::<>Button<>::
 ResizeButton.gd::GDScript::-1::1707477448::0::1::::<>Button<>::
-StartingArea.gd::GDScript::-1::1707478285::0::1::::<>CanvasLayer<>::
-StartingArea.tscn::PackedScene::8186352829943686064::1707478692::0::1::::<><>::res://main/generators/StartingArea.gd<>uid://cqcbkh53cbjwd::::res://main/components/player/PlayerCharacter.tscn<>res://main/generators/Button.gd<>res://main/generators/FloorMapToggle.gd<>uid://dusbgjjj3st3h::::res://main/components/shaders/GB_Material.tres<>res://main/generators/Reload.gd
+StartingArea.gd::GDScript::-1::1707483342::0::1::::<>CanvasLayer<>::
+StartingArea.tscn::PackedScene::8186352829943686064::1707483673::0::1::::<><>::res://main/generators/StartingArea.gd<>uid://cqcbkh53cbjwd::::res://main/components/player/PlayerCharacter.tscn<>res://main/generators/Button.gd<>res://main/generators/FloorMapToggle.gd<>uid://dusbgjjj3st3h::::res://main/components/shaders/GB_Material.tres<>res://main/generators/Reload.gd
 UI.gd::GDScript::-1::1707471428::0::1::::<>CanvasLayer<>::
 ::res://main/guis/::1706890488
 player_info.gd::GDScript::-1::1706041665::0::1::::<>Control<>::
@@ -86,7 +86,7 @@ RichTextLabel.gd::GDScript::-1::1705951826::0::1::::<>Button<>::
 StartScreen.gd::GDScript::-1::1705953999::0::1::::<>CanvasLayer<>::
 StartScreen.tscn::PackedScene::1903916802219372964::1706890488::0::1::::<><>::res://main/start_screen/StartScreen.gd
 ::res://movies/::1706797285
-::res://sprites/::1707478691
+::res://sprites/::1707478747
 blurred logo.png::CompressedTexture2D::3573909559541238742::1705955862::1705955834::1::::<><>::
 boulder_area_1.png::CompressedTexture2D::9221096528089945585::1706883323::1706883326::1::::<><>::
 boulder_area_2.png::CompressedTexture2D::2931961868460870885::1706883323::1706883326::1::::<><>::
