@@ -19,3 +19,5 @@ res://main/generators/StartingArea.tscn
 res://main/components/player/PlayerCharacter.tscn
 res://main/components/lava/Lava.tscn
 res://main/generators/StartingArea.gd
+res://main/components/player/Player.gd
+res://main/components/player/Main Camera.gd

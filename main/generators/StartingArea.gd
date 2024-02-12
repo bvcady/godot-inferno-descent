@@ -323,7 +323,7 @@ func _draw_map ():
 	$UI/FloorMap.hide();
 	$UI/FloorMap.texture = floorMapTexture;
 	$UI/FloorMap.position = Vector2(10, 10)
-	$UI/FloorMap.scale = Vector2(0.2, 0.2)
+	$UI/FloorMap.scale = Vector2(0.5, 0.5)
 	
 	
 func _add_tiles ():

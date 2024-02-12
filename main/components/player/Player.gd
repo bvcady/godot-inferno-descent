@@ -21,14 +21,16 @@ func _ready():
 	$AnimatedSprite2D.play()
 	target_position = position
 	#
-#func _input(event):
-	#if event is InputEventMouseButton && event.is_released():
-		#if ($"Main Camera".zoom.x == 0.125):
-			#$SpriteLight.show()
-			#$"Main Camera".zoom = Vector2(1, 1)
-		#else:
-			#$SpriteLight.hide()			
-			#$"Main Camera".zoom = Vector2(0.125, 0.125)
+func _input(event):
+	if event is InputEventMouseButton && event.is_released():
+		if ($"Main Camera".zoomed == true):
+			$SpriteLight.show()
+			$"Main Camera".target_zoom = 4
+			$"Main Camera".zoomed = false
+		else:
+			$SpriteLight.hide()			
+			$"Main Camera".target_zoom = 3
+			$"Main Camera".zoomed = true
 		
 
 func _physics_process(delta):	
