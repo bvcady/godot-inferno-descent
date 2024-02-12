@@ -6,10 +6,10 @@ extends Camera2D
 @export var zoomed: bool = false
 
 func _ready():
-	drag_left_margin = 0.16
-	drag_right_margin = 0.16
-	drag_top_margin = 0.22
-	drag_bottom_margin = 0.22
+	drag_left_margin = 32 / get_viewport_rect().size.x * 2 * target_zoom
+	drag_right_margin = 32 / get_viewport_rect().size.x * 2 * target_zoom
+	drag_top_margin = 32 / get_viewport_rect().size.y * 2 * target_zoom
+	drag_bottom_margin = 32 / get_viewport_rect().size.y * 2 * target_zoom
 	pass # Replace with function body.
 
 

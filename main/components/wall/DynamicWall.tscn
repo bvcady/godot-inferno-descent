@@ -1,58 +1,19 @@
-[gd_scene load_steps=5 format=3 uid="uid://bh7lvpujkfjk7"]
+[gd_scene load_steps=3 format=3 uid="uid://bh7lvpujkfjk7"]
 
-[ext_resource type="Shader" path="res://main/components/wall/DynamicWall.gdshader" id="1_u0o1d"]
+[ext_resource type="Script" path="res://main/components/wall/DynamicWall.gd" id="1_siuwi"]
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_mriom"]
-noise_type = 4
-frequency = 0.1701
-fractal_type = 2
-domain_warp_amplitude = 2.0
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_rhwud"]
+polygon = PackedVector2Array(2, 2, 30, 2, 30, 30, 2, 30)
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fih3i"]
-width = 32
-height = 64
-noise = SubResource("FastNoiseLite_mriom")
+[node name="DynamicWall" type="StaticBody2D"]
+script = ExtResource("1_siuwi")
+colorOne = Color(0.835294, 0.654902, 0.329412, 1)
+colorTwo = Color(0, 0, 0, 1)
+colorThree = Color(0.462745, 0.0980392, 0.0745098, 1)
+colorFour = Color(0.721569, 0.4, 0.215686, 1)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_d2v0n"]
-shader = ExtResource("1_u0o1d")
-shader_parameter/strength = 0.002
-shader_parameter/noise = SubResource("NoiseTexture2D_fih3i")
-
-[node name="DynamicWall" type="Node2D"]
-
-[node name="TopWall" type="ColorRect" parent="."]
-offset_right = 32.0
-offset_bottom = 64.0
-color = Color(0.0156863, 0.0156863, 0.0156863, 1)
-metadata/_edit_use_anchors_ = true
-
-[node name="TopWall2" type="ColorRect" parent="."]
-offset_left = 1.0
-offset_top = 1.0
-offset_right = 31.0
-offset_bottom = 63.0
-color = Color(0.478431, 0.478431, 0.478431, 1)
-metadata/_edit_use_anchors_ = true
-
-[node name="TopWall3" type="ColorRect" parent="."]
-offset_right = 32.0
-offset_bottom = 32.0
-pivot_offset = Vector2(45, 59)
-color = Color(0.0156863, 0.0156863, 0.0156863, 1)
-metadata/_edit_use_anchors_ = true
-
-[node name="TopWall4" type="ColorRect" parent="."]
-offset_left = 1.0
-offset_top = 1.0
-offset_right = 31.0
-offset_bottom = 31.0
-pivot_offset = Vector2(14, 18)
-color = Color(0.478431, 0.478431, 0.478431, 1)
-metadata/_edit_use_anchors_ = true
-
-[node name="Displacement" type="ColorRect" parent="."]
-material = SubResource("ShaderMaterial_d2v0n")
-offset_right = 32.0
-offset_bottom = 64.0
-color = Color(1, 1, 1, 0)
-metadata/_edit_use_anchors_ = true
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+light_mask = 2
+position = Vector2(2.08165e-12, 2.08165e-12)
+occluder = SubResource("OccluderPolygon2D_rhwud")
+occluder_light_mask = 2

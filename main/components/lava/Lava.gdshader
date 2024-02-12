@@ -27,32 +27,23 @@ void fragment () {
 	vec2 pos = UV + dis;
 	vec4 noise_col = texture(noise, (pos + (scrollSpeed * TIME + seed) + vec2(0.5 + sin((TIME + seed)/rotationSpeed), 0.5 -cos((TIME + seed)/rotationSpeed))));
 	vec4 secondary_noise_col = texture(secondaryNoise, pos + (secondaryScrollSpeed * TIME * 2.0) + vec2(0.5 + sin(TIME/rotationSpeed), 0.5 -cos(TIME/rotationSpeed)));
-	vec4 tertiary_noise_col = texture(tertiaryNoise, UV + seed);
 	vec4 one =  vec4(1.0, 1.0, 1.0, 1.0);
 	vec4 A = noise_col;
 	vec4 B = secondary_noise_col;
 	vec4 mappedValues = one - (A * A * B * B);
-	
-	//vec4 mappedValues = A;
 
 	float rgb_avg = (mappedValues.r + mappedValues.g + mappedValues.b) / 3.0;
-	float outerLimit = length((UV - vec2(0.5, 0.5))) * 1.5;
-	float isHidden = 0.0;
-		
-	if (outerLimit < 1.0) {
-			if(tertiary_noise_col.x +  0.2 > outerLimit){
-				isHidden = 1.0;
-			}
-	}
+	
+	vec4 beforePixelated;
 	
 	if (rgb_avg < lightestThreshold) {
-		COLOR = vec4(lightest.x, lightest.y, lightest.z, isHidden);
+		COLOR = vec4(lightest.x, lightest.y, lightest.z, 1);
 	} else if (rgb_avg < lightThreshold) {
-		COLOR = vec4(light.x, light.y, light.z, isHidden);
+		COLOR = vec4(light.x, light.y, light.z, 1);
 	} else if (rgb_avg < darkThreshold) {
-		COLOR = vec4(dark.x, dark.y, dark.z, isHidden);
+		COLOR = vec4(dark.x, dark.y, dark.z, 1);
 	} else {
-		COLOR = vec4(darkest.x, darkest.y, darkest.z, isHidden);
+		COLOR = vec4(darkest.x, darkest.y, darkest.z, 1);
 	}
-	//vec2(noise_col.x, noise_col.y)
+
 }

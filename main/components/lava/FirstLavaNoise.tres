@@ -2,14 +2,13 @@
 
 [resource]
 seed = 12
-frequency = 0.0027
-offset = Vector3(2.08167e-14, 2.08167e-14, 98.65)
+frequency = 0.0056
 fractal_type = 3
 fractal_lacunarity = 2.08165e-12
-fractal_ping_pong_strength = 4.89
+fractal_ping_pong_strength = 4.17
 domain_warp_enabled = true
 domain_warp_type = 2
-domain_warp_amplitude = 24.71
+domain_warp_amplitude = 23.55
 domain_warp_frequency = 0.02
 domain_warp_fractal_lacunarity = 0.05
 domain_warp_fractal_gain = 0.02

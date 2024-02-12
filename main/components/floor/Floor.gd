@@ -5,8 +5,6 @@ class_name FloorTile
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	noiseVal = noiseVal/10
-	$ColorRect.color *= (1 - noiseVal);
 	pass # Replace with function body.
 
 

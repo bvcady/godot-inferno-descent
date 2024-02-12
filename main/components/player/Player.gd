@@ -24,12 +24,12 @@ func _ready():
 func _input(event):
 	if event is InputEventMouseButton && event.is_released():
 		if ($"Main Camera".zoomed == true):
-			$SpriteLight.show()
-			$"Main Camera".target_zoom = 4
+			#$SpriteLight.show()
+			$"Main Camera".target_zoom = 3
 			$"Main Camera".zoomed = false
 		else:
-			$SpriteLight.hide()			
-			$"Main Camera".target_zoom = 3
+			#$SpriteLight.hide()			
+			$"Main Camera".target_zoom = 2
 			$"Main Camera".zoomed = true
 		
 
@@ -64,9 +64,9 @@ func handle_input():
 			if(current_floor && current_floor.has_method("_is_valid_move")):
 				var t_tile = round(position/cell_size) + direction
 				if current_floor._is_valid_move(t_tile):
-					var d = + Vector2(randf_range(-2.0, 2.0), randf_range(-3.0, 3.0));
+					#var d = + Vector2(randf_range(-2.0, 2.0), randf_range(-3.0, 3.0));
 					var t_p = t_tile * move_distance;
-					target_position = round(t_p) + round(d)
+					target_position = round(t_p)
 					moving = true
 
 		

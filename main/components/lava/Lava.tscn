@@ -19,7 +19,8 @@ centered = false
 [node name="LavaGenerator" type="ColorRect" parent="Sprite2D"]
 z_as_relative = false
 material = ExtResource("2_cjxwq")
-offset_right = 26.0
-offset_bottom = 26.0
+offset_right = 6.5
+offset_bottom = 6.5
+scale = Vector2(4, 4)
 color = Color(1, 0.121569, 0.0470588, 1)
 script = ExtResource("3_n8m21")

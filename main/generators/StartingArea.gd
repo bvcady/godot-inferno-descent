@@ -60,14 +60,14 @@ func _ready():
 	
 	_add_tiles();
 
-	if(possiblePlayerTiles.size()):
-		var possible_steps = find_shortest_path(possiblePlayerTiles[0],endGoal, grid)
-		for step in possible_steps:
-			var c = ColorRect.new()
-			c.position = step*  cell_size + Vector2(14, 14)
-			c.size = Vector2(4, 4);
-			c.color = Color.AQUA
-			$StepGroup.add_child(c)
+	#if(possiblePlayerTiles.size()):
+		#var possible_steps = find_shortest_path(possiblePlayerTiles[0],endGoal, grid)
+		#for step in possible_steps:
+			#var c = ColorRect.new()
+			#c.position = step*  cell_size + Vector2(14, 14)
+			#c.size = Vector2(4, 4);
+			#c.color = Color.AQUA
+			#$StepGroup.add_child(c)
 	
 	print(placedAreas)
 	print(placedAreas.size())
@@ -160,15 +160,14 @@ func _add_floor(pos):
 	$FloorGroup.add_child(floor)
 	
 func _add_wall(pos):
-	var wall = preload("res://main/components/wall/Wall.tscn").instantiate()
+	var wall = preload("res://main/components/wall/DynamicWall.tscn").instantiate()
 
 	var wN = getNormalizedNoise2d(wallNoise, pos)
 	wall.noiseVal = wN;
-	
-	grid[pos.y][pos.x].type = 'wall' 
-	
+		
 	wall.normalPosition = pos
 	wall.position = pos*cell_size
+	
 	
 	$DrawGroup.add_child(wall)
 	
@@ -323,7 +322,7 @@ func _draw_map ():
 	$UI/FloorMap.hide();
 	$UI/FloorMap.texture = floorMapTexture;
 	$UI/FloorMap.position = Vector2(10, 10)
-	$UI/FloorMap.scale = Vector2(0.5, 0.5)
+	$UI/FloorMap.scale = Vector2(0.8, 0.8)
 	
 	
 func _add_tiles ():
@@ -335,12 +334,11 @@ func _add_tiles ():
 				_add_floor(item.position)
 				#new_floor.position = Vector2(item.position.x * cell_size.x, item.position.y * cell_size.y)
 			elif(item.has('type') and item.type == 'wall'):
-				var new_wall = preload("res://main/components/wall/Wall.tscn");
 				_add_wall(item.position)
 				
 	possiblePlayerTiles.shuffle();
 	if(possiblePlayerTiles.size()):
 		_add_player(possiblePlayerTiles[0])
-		_add_lava(possiblePlayerTiles[1])
+		#_add_lava(possiblePlayerTiles[1])
 	
 	
