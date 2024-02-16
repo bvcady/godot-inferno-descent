@@ -1,13 +1,13 @@
-TextureRect
 LightOccluder2D
+Button
+ColorRect
+TextureRect
 StaticBody2D
 Node2D
 CanvasModulate
 CanvasLayer
 Line2D
 CanvasGroup
-Button
-ColorRect
 ProgressBar
 MarginContainer
 CollisionShape2D

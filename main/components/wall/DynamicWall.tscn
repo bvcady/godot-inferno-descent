@@ -1,19 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://bh7lvpujkfjk7"]
+[gd_scene load_steps=2 format=3 uid="uid://bh7lvpujkfjk7"]
 
 [ext_resource type="Script" path="res://main/components/wall/DynamicWall.gd" id="1_siuwi"]
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_rhwud"]
-polygon = PackedVector2Array(2, 2, 30, 2, 30, 30, 2, 30)
 
 [node name="DynamicWall" type="StaticBody2D"]
 light_mask = 4
 script = ExtResource("1_siuwi")
+normalPosition = Vector2(1, 1)
+noiseVal = 0.605749
+crowdedness = 1
 colorOne = Color(0.835294, 0.654902, 0.329412, 1)
-colorTwo = Color(0, 0, 0, 1)
-colorThree = Color(0.462745, 0.0980392, 0.0745098, 1)
-colorFour = Color(0.721569, 0.4, 0.215686, 1)
-
-[node name="Base" type="LightOccluder2D" parent="."]
-position = Vector2(2.08165e-12, 2.08165e-12)
-occluder = SubResource("OccluderPolygon2D_rhwud")
-occluder_light_mask = 2
+colorThree = Color(0.317647, 0.298039, 0.321569, 1)
+WALL_WIDTH = 24

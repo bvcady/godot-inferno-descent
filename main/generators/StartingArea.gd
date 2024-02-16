@@ -1,6 +1,6 @@
 extends CanvasLayer
-var GRID_WIDTH = 150;
-var GRID_HEIGHT = 150;
+var GRID_WIDTH = 40;
+var GRID_HEIGHT = 40;
 var level_size = Vector2(GRID_WIDTH, GRID_HEIGHT)
 const cell_size = Vector2(32,32)
 var location = Vector2(0, 0);
@@ -20,6 +20,8 @@ var max_attempts = 10
 var floorColor = Color.from_string('#524c52', Color.BURLYWOOD)
 var wallColor = Color(floorColor.darkened(0.1))
 var edgeColor = Color.from_string('#000000', Color.BROWN)
+
+var dirs = [Vector2(0, -1), Vector2(0, 1), Vector2(-1, 0), Vector2(1, 0)]
 
 func reset(): 
 	get_tree().reload_current_scene()
@@ -124,7 +126,6 @@ func getNormalizedNoise2d(noise: FastNoiseLite, pos: Vector2):
 	return (1 + noise.get_noise_2dv(pos)) / 2;
 	
 func get_movement_range(start: Vector2, max_distance: int):
-	var directions = [Vector2(0, 1), Vector2(1, 0), Vector2(0, -1), Vector2(-1, 0)]  # Right, Down, Left, Up
 	var queue = [[start, 0]]  # Each element is a tuple (position, distance)
 	var visited: Dictionary = {}
 	visited[start] = true
@@ -135,10 +136,8 @@ func get_movement_range(start: Vector2, max_distance: int):
 		var distance = current[1]
 
 		if distance < max_distance:
-			for direction in directions:
-				var nx = position.x + direction[0]
-				var ny = position.y + direction[1]
-				var next_position = Vector2(nx, ny)
+			for dir in dirs:
+				var next_position = position + dir
 				if is_valid(next_position, grid) and not visited.has(next_position):
 					visited[next_position] = true
 					queue.push_back([next_position, distance + 1])
@@ -150,7 +149,6 @@ func is_valid(pos: Vector2, temp_grid):
 	return x >= 0 and x < GRID_WIDTH and y >= 0 and y < GRID_HEIGHT and temp_grid[y][x].has('type') and temp_grid[y][x].type != "wall" and temp_grid[y][x]['accessible'] == true
 
 func find_shortest_path(start: Vector2, goal: Vector2, temp_grid):
-	var directions = [Vector2(0, 1), Vector2(1, 0), Vector2(0, -1), Vector2(-1, 0)]  # Right, Down, Left, Up
 	var queue = [start]
 	var visited = {}
 	visited[start] = null  # Start has no predecessor
@@ -161,8 +159,8 @@ func find_shortest_path(start: Vector2, goal: Vector2, temp_grid):
 			var path = construct_path(visited, goal)	
 			return path
 
-		for direction in directions:
-			var next_position = current + direction
+		for dir in dirs:
+			var next_position = current + dir
 			if is_valid(next_position, temp_grid) and not visited.has(next_position):
 				visited[next_position] = current  # Mark current as predecessor of next_position
 				queue.push_back(next_position)
@@ -229,20 +227,6 @@ func _add_player(initial_position):
 	player.position = initial_position*cell_size 
 
 	player.start(Vector2(level_size.x * cell_size.x,  level_size.y * cell_size.y))
-
-
-#func has_neighbouring_wall(x, y):
-	 ## Check each neighbour (up, down, left, right)
-	#for offset in [Vector2(0, -1), Vector2(0, 1), Vector2(-1, 0), Vector2(1, 0)]:
-		#var neighbour_x = x + offset.x
-		#var neighbour_y = y + offset.y
-#
-		## Make sure we're not checking out of bounds
-		#if neighbour_x >= 0 and neighbour_x < GRID_WIDTH and neighbour_y >= 0 and neighbour_y < GRID_HEIGHT:
-			#if grid[neighbour_x][neighbour_y] == 'floor':
-				#return true
-#
-	#return false
 
 
 func can_fit_rectangle(_x, _y, size: Vector2):
@@ -366,10 +350,10 @@ func _generate_floor():
 
 
 func neighbours_floor(x,y):
-	var dirs = [Vector2(0, 1), Vector2(0, -1), Vector2(-1, 0), Vector2(1, 0), Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1), Vector2(-1, -1)]
+	var surrounding_dirs = [Vector2(0, 1), Vector2(0, -1), Vector2(-1, 0), Vector2(1, 0), Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1), Vector2(-1, -1)]
 				
 	var valid = false
-	for dir in dirs:
+	for dir in surrounding_dirs:
 		if not (y + dir.y >= GRID_HEIGHT or x + dir.x >= GRID_WIDTH or y + dir.y < 0 or x + dir.x < 0):
 			var tile = grid[y + dir.y][x + dir.x];
 			if (tile.has('type') and tile.type == 'floor'):
@@ -415,17 +399,27 @@ func _determine_wall_position ():
 			if tile.has("type") and tile.type == 'wall':
 				var dir = Vector2.ZERO;
 				var nWalls = 0
-				for i in range(-2, 3):
-					for j in range(-2, 3):
-						if (i + x >= 0 and i + x < GRID_WIDTH and j + y >= 0 and j + y < GRID_HEIGHT):
-							var neighbouring_tile = grid[y + j][x + i]
+				for ndir in dirs:
+					var vec = Vector2(x,y) + ndir;
+					if (vec.x >= 0 and vec.x < GRID_WIDTH and vec.y >= 0 and vec.y < GRID_HEIGHT):
+							var neighbouring_tile = grid[vec.y][vec.x]
 							if neighbouring_tile.has('type') and neighbouring_tile.type == 'wall':
-								dir += Vector2(i, j)
+								dir += ndir
 								nWalls += 1
-						else: 
-							dir += Vector2(i, j)
+					else: 
+							dir += ndir
 							nWalls += 1
-				grid[y][x].wall_displacement = dir.normalized()
+				#for i in range(-2, 3):
+					#for j in range(-2, 3):
+						#if (i + x >= 0 and i + x < GRID_WIDTH and j + y >= 0 and j + y < GRID_HEIGHT):
+							#var neighbouring_tile = grid[y + j][x + i]
+							#if neighbouring_tile.has('type') and neighbouring_tile.type == 'wall':
+								#dir += Vector2(i, j)
+								#nWalls += 1
+						#else: 
+							#dir += Vector2(i, j)
+							#nWalls += 1
+				grid[y][x].wall_displacement = dir
 				grid[y][x].crowdedness = nWalls
 			
 	var end = Time.get_ticks_msec()
@@ -438,11 +432,6 @@ func draw_floor ():
 	var start = Time.get_ticks_msec()
 	
 	var floorImage = Image.create(GRID_WIDTH*cell_size.x, GRID_HEIGHT*cell_size.y, true, Image.FORMAT_RGBA8)
-	
-
-		
-
-	var dirs = [Vector2(0, -1), Vector2(0, 1), Vector2(-1, 0), Vector2(1, 0)]
 	
 	for x in GRID_WIDTH:
 		for y in GRID_HEIGHT:
@@ -460,9 +449,9 @@ func draw_floor ():
 	var inv = 32/ratio;
 	
 	var s_grid = []
-	for y in GRID_WIDTH * ratio:
+	for y in GRID_HEIGHT * ratio:
 		s_grid.append([])
-		for x in GRID_HEIGHT * ratio:
+		for x in GRID_WIDTH * ratio:
 			s_grid[y].append('')
 	
 	for x in GRID_WIDTH * ratio:
@@ -485,32 +474,21 @@ func draw_floor ():
 					if next_to_wall and r:
 						floorImage.fill_rect(rect, wallColor)
 	
-	for x in GRID_WIDTH * ratio:
-		for y in GRID_HEIGHT * ratio:
-			var current_cell = s_grid[y][x]
-			if(current_cell) != 'floor':
-				continue
-			var rect = Rect2i(x*inv,y*inv, inv, inv)
-			var f = floorImage.get_pixel(x*inv, y*inv)
-			for dir in dirs:
-				var pos = Vector2(x + dir.x, y + dir.y)
-				var within_bounds = pos.x >= 0 and pos.x < GRID_WIDTH*ratio and pos.y >= 0 and pos.y < GRID_HEIGHT*ratio
-				if within_bounds:
-					var next_to_wall = s_grid[pos.y][pos.x] == 'wall'					
-					var r = randi()%6 == 0
-					if next_to_wall and r:
-						floorImage.fill_rect(rect, wallColor)
-
-	#for x in GRID_WIDTH * 32:
-		#for y in GRID_HEIGHT * 32:
-			#var rect = Rect2i(x*1,y*1, 1, 1)
-			#var f = floorImage.get_pixel(x*1, y*1)
+	#for x in GRID_WIDTH * ratio:
+		#for y in GRID_HEIGHT * ratio:
+			#var current_cell = s_grid[y][x]
+			#if(current_cell) != 'floor':
+				#continue
+			#var rect = Rect2i(x*inv,y*inv, inv, inv)
+			#var f = floorImage.get_pixel(x*inv, y*inv)
 			#for dir in dirs:
-				#var n = Vector2(x, y)*1 + dir*1
-				#var p = floorImage.get_pixelv(n)
-#
-				#if p.is_equal_approx(wallColor) and f.is_equal_approx(floorColor):
-					#floorImage.fill_rect(rect, edgeColor)
+				#var pos = Vector2(x + dir.x, y + dir.y)
+				#var within_bounds = pos.x >= 0 and pos.x < GRID_WIDTH*ratio and pos.y >= 0 and pos.y < GRID_HEIGHT*ratio
+				#if within_bounds:
+					#var next_to_wall = s_grid[pos.y][pos.x] == 'wall'					
+					#var r = randi()%6 == 0
+					#if next_to_wall and r:
+						#floorImage.fill_rect(rect, wallColor)
 
 	
 	var floorTexture = ImageTexture.create_from_image(floorImage)
