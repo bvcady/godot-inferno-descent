@@ -1,6 +1,6 @@
+TextureRect
 LightOccluder2D
 StaticBody2D
-TextureRect
 Node2D
 CanvasModulate
 CanvasLayer
@@ -12,4 +12,3 @@ ProgressBar
 MarginContainer
 CollisionShape2D
 Area2D
-ShapeCast2D

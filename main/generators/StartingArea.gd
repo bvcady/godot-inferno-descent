@@ -1,14 +1,13 @@
 extends CanvasLayer
-var GRID_WIDTH = 100;
-var GRID_HEIGHT = 100;
+var GRID_WIDTH = 150;
+var GRID_HEIGHT = 150;
 var level_size = Vector2(GRID_WIDTH, GRID_HEIGHT)
 const cell_size = Vector2(32,32)
 var location = Vector2(0, 0);
 var grid = [];
-var map: Image = Image.new()
 var wallNoise: FastNoiseLite;
 var placedAreas = [];
-var area_options = ['gated_area_1', 'gated_area_2', 'boulder_area_1', 'boulder_area_2', 'exit_area']
+var area_options = ['gated_area_1', 'gated_area_2', 'boulder_area_1', 'boulder_area_2', 'exit_area', 'boss_area']
 var possiblePlayerTiles = []
 var pathNoise;
 var displacement = 0.02;
@@ -16,12 +15,24 @@ var displacementNoise = FastNoiseLite.new();
 var _scale = Vector2(10, 10);
 var n_rooms = 1
 var endGoal = Vector2(0, 0);
+var max_attempts = 10
 
+var floorColor = Color.from_string('#524c52', Color.BURLYWOOD)
+var wallColor = Color(floorColor.darkened(0.1))
+var edgeColor = Color.from_string('#000000', Color.BROWN)
 
 func reset(): 
 	get_tree().reload_current_scene()
 
+func largest_of(a: int, b: int):
+	if a >= b: 
+		return a
+	else:
+		return b
+
 func _ready():
+	
+	var from = Time.get_ticks_msec();
 	follow_viewport_enabled = true;
 	
 	displacementNoise.noise_type = FastNoiseLite.TYPE_PERLIN;
@@ -37,9 +48,9 @@ func _ready():
 				var tile = ColorRect.new();
 				if (Vector2(x, y).distance_to(Vector2(GRID_WIDTH/2, GRID_HEIGHT/2)) <= Vector2(GRID_WIDTH/2, GRID_HEIGHT/2).length()/2 + displacementNoise.get_noise_2d(x,y)/displacement): 
 					totAccessible += 1
-					grid[y].append({'position': Vector2(x,y), "accessible": true, "type": 'empty', "isRoom": false})
+					grid[y].append({'position': Vector2(x,y), "accessible": true, "isRoom": false, "type": "empty"})
 				else:
-					grid[y].append({'position': Vector2(x,y), "accessible": false})
+					grid[y].append({'position': Vector2(x,y), "accessible": false, "isRoom": false, "type": "empty"})
 		if(totAccessible < minimumArea):
 			grid = []
 			totAccessible = 0;
@@ -51,15 +62,37 @@ func _ready():
 	pathNoise.seed = randi();
 	
 	
-	n_rooms = int (GRID_HEIGHT * GRID_WIDTH / 500)
-
+	#n_rooms = int(GRID_WIDTH*GRID_HEIGHT / 500) 
+	n_rooms = int(largest_of(GRID_WIDTH, GRID_HEIGHT)/10) + 1
+	print('Attempting to place ', n_rooms - 1, ' rooms.')
+	if n_rooms <= 1: 
+		n_rooms = 2
+	
+	var start = Time.get_ticks_msec()
 	for i in n_rooms: 
 		_generate_floor()
+
+	var end = Time.get_ticks_msec()
+	print('Procedurally place rooms, ', (end - start), ' ms.')
 	
+	for y in GRID_HEIGHT:
+		for x in GRID_WIDTH:
+			var tile = grid[y][x];
+			if (tile.has('type') == false or (tile.has('type') and tile.type == 'empty')) and neighbours_floor(x,y):
+				tile.accessible = true
+				tile.type = 'wall'
+	
+	_determine_wall_position()
+			
 	_draw_map();
 	
 	_add_tiles();
+	
+	draw_floor();
 
+	var to = Time.get_ticks_msec();
+	print('Succeeded placing ', placedAreas.size() - 1, ' rooms.')
+	print('Total elapsed time generating level ', (to - from)/1000.0, ' seconds.')
 	#if(possiblePlayerTiles.size()):
 		#var possible_steps = find_shortest_path(possiblePlayerTiles[0],endGoal, grid)
 		#for step in possible_steps:
@@ -69,10 +102,20 @@ func _ready():
 			#c.color = Color.AQUA
 			#$StepGroup.add_child(c)
 	
-	print(placedAreas)
-	print(placedAreas.size())
 		
-	
+func _get_narrowness(pos: Vector2, dis: int): 
+	var directions = []  # Right, Down, Left, Up
+	for x in range(-dis, dis + 1):
+		for y in range(-dis, dis + 1):
+			directions.append(Vector2(x, y))
+			
+	var n = 0;
+	for dir in directions:
+		var neighbour = pos + dir
+		if (neighbour.x < GRID_WIDTH and neighbour.y < GRID_HEIGHT and neighbour.x >= 0 and neighbour.y >=0):
+			if (grid[neighbour.y][neighbour.x].has('type') and grid[neighbour.y][neighbour.x].type == 'floor'):
+				n += 1
+	return n
 
 func getNormalizedNoise(noise: FastNoiseLite, x: float, y: float):
 	return getNormalizedNoise2d(noise, Vector2(x, y))
@@ -144,7 +187,7 @@ func _is_valid_move(target_cell):
 	var valid_tile = xOver0 && yOver0 && xUnderWidth && yUnderHeight;
 
 	if valid_tile:
-		if(grid[target_cell.y][target_cell.x].type != 'wall' && grid[target_cell.y][target_cell.x].type != 'empty'):
+		if(grid[target_cell.y][target_cell.x].has('type') and grid[target_cell.y][target_cell.x].type != 'wall' && grid[target_cell.y][target_cell.x].type != 'empty'):
 			return true
 	return false
 	
@@ -153,9 +196,10 @@ func _add_lava(pos):
 	lava.position = pos*cell_size
 	$FloorGroup.add_child(lava)
 	
-func _add_floor(pos):
+func _add_floor(pos, _color: Color = Color.TRANSPARENT):
 	var floor = preload("res://main/components/floor/Floor.tscn").instantiate()
 	floor.position = pos*cell_size
+	floor.color = _color
 	floor.noiseVal = getNormalizedNoise2d(wallNoise, pos)
 	$FloorGroup.add_child(floor)
 	
@@ -164,14 +208,18 @@ func _add_wall(pos):
 
 	var wN = getNormalizedNoise2d(wallNoise, pos)
 	wall.noiseVal = wN;
-		
+	var tile = grid[pos.y][pos.x]
+	if (tile.has('wall_displacement')):
+		wall.displacement_vector = tile.wall_displacement
+	if (tile.has('crowdedness')):
+		wall.crowdedness = tile.crowdedness
 	wall.normalPosition = pos
 	wall.position = pos*cell_size
 	
 	
 	$DrawGroup.add_child(wall)
 	
-	_add_floor(pos)
+	#_add_floor(pos, Color.from_string('#761913', Color.INDIAN_RED))
 	
 func _add_player(initial_position):
 	var player = $DrawGroup/PlayerCharacter
@@ -197,34 +245,44 @@ func _add_player(initial_position):
 	#return false
 
 
-func can_fit_rectangle(s_x, s_y, a, b):
+func can_fit_rectangle(_x, _y, size: Vector2):
 	var hasFloor = false;
 	var canFit = true;
 	
 	var area = []
 	# Check each cell within the a x b area
-	for x in range(s_x, s_x + a):
-		for y in range(s_y, s_y + b):
-			# Make sure we're not checking out of bounds or any of the tiles is 'inaccessible'
-			if (x >= GRID_WIDTH or y >= GRID_HEIGHT or grid[y][x].accessible == false or grid[y][x].isRoom == true):
+	if _x + size.x >= GRID_WIDTH: 
+		return false
+	if _y + size.y >= GRID_HEIGHT: 
+		return false
+		
+	for x in range(_x, _x + size.x):
+		for y in range(_y, _y + size.y):
+			if (grid[y][x].accessible == false or grid[y][x].isRoom == true):
 				canFit = false
 			elif (grid[y][x].type == 'floor'): 
 				hasFloor = true
 
-	return canFit && hasFloor
+	return hasFloor and canFit
 	
 	
 func distance_from_center(a: Vector2, b: Vector2):
 	var center = Vector2(GRID_WIDTH/2, GRID_HEIGHT/2)
 	return center.distance_to(a) < center.distance_to(b)
 	
-func find_random_place(size: Vector2) -> void:
+func find_random_place(room: Image) -> void:	
+	var size = room.get_size();
 	var valid_anchors = []
+	
 	# Step 1: Identify potential anchors
-	for y in GRID_HEIGHT:
-		for x in GRID_WIDTH:
-			if (can_fit_rectangle(x, y, size.x, size.y)):
-				valid_anchors.append(Vector2(x, y))
+	
+	if placedAreas.size() == 1:
+		valid_anchors.append(Vector2(GRID_WIDTH/2 - size.x/2, GRID_HEIGHT/2 - size.y/2))
+	else: 
+		for y in range(0, GRID_HEIGHT - size.y - 2):
+			for x in range(0, GRID_WIDTH - size.x - 2):
+				if (can_fit_rectangle(x, y, size)):
+					valid_anchors.append(Vector2(x, y))
 
 	# Step 2: Random selection
 	if valid_anchors.size() > 0:
@@ -232,26 +290,32 @@ func find_random_place(size: Vector2) -> void:
 		var valid_location = false;
 		var attempts = 0;
 		
-		while (not valid_location and attempts < 3): 
-			valid_anchors.shuffle()				
-			var option = valid_anchors[0]
-			var temp_grid = grid;
-			for y in range(option.y, option.y + size.y):
-				for x in range(option.x, option.x + size.x):
-					var tileVector = Vector2(x, y)
-					var p = map.get_pixelv(tileVector - option)
+		var option = valid_anchors[0]
+		
+		var temp_grid = [];
+		
+		while (not valid_location and attempts < max_attempts): 
+			valid_anchors.shuffle()	
+			option = valid_anchors[0]			
+			temp_grid = grid.duplicate(true);
+
+			for y in size.y:
+				for x in size.x:
+					var tileVector = Vector2(x + option.x, y + option.y)
+					var p = room.get_pixelv(tileVector - option)
+
 					var avgPixel = p.get_luminance()
 					var alpha = p.a;
 					var curPixel = avgPixel * 255;
-
-					if (curPixel == 0):
-						temp_grid[tileVector.y][tileVector.x].type = 'wall';
-					elif (curPixel > 0 && curPixel < 255 && getNormalizedNoise2d(wallNoise, tileVector) > 0.5):
-						temp_grid[tileVector.y][tileVector.x].type = 'wall';
-					else:
-						if placedAreas.size() == 1:
-							possiblePlayerTiles.append(tileVector)
-						temp_grid[tileVector.y][tileVector.x].type = 'floor'
+					if not (alpha == 0):
+						if (curPixel == 0):
+							temp_grid[tileVector.y][tileVector.x].type = 'wall';
+						else:
+							if curPixel < 255: 
+								endGoal = tileVector
+								if placedAreas.size() == 1:
+									possiblePlayerTiles.append(tileVector)
+							temp_grid[tileVector.y][tileVector.x].type = 'floor'
 					temp_grid[tileVector.y][tileVector.x].isRoom = true;
 					
 			if placedAreas.size() == 1: 		
@@ -261,19 +325,19 @@ func find_random_place(size: Vector2) -> void:
 				var pathToOptions = find_shortest_path(possiblePlayerTiles[0], option, temp_grid)
 				valid_location = pathToOptions.size() > 0;
 				attempts += 1;
-				if(attempts == 3 and not valid_location):
-					'Skipping attempt to place room'
+				if(attempts == max_attempts and not valid_location):
+					'skip'
+					#print('Skipping attempt to place room')
 				
-			if(valid_location):
-				endGoal = option
-				location = option
-				grid = temp_grid
-				placedAreas.append({"position": valid_anchors[0], "area": size})
+		if(valid_location):
+			endGoal = option
+			location = option
+			grid = temp_grid.duplicate(true)
+			placedAreas.append({"position": valid_anchors[0], "area": size})
 
 
 func _generate_floor():
 	area_options.shuffle()
-	var walledTiles = []
 	if(placedAreas.size() == 0):
 		var s = level_size
 		var location = Vector2(0, 0);
@@ -289,18 +353,32 @@ func _generate_floor():
 						grid[tileVector.y][tileVector.x].type = 'empty';
 		placedAreas.append({"position": Vector2(location.x + s.x, location.y + s.y), "area": s})	
 	else: 
+		var room: Image = Image.new()
 		if(placedAreas.size() == 1):
-			map.load("res://sprites/start_area.png")
+			room.load("res://sprites/start_area.png")
 		else:			
 			var chosen = area_options[0]	
-			map.load("res://sprites/" + chosen + '.png')	
-		var mapSize = map.get_size();
-		var validLocation = false
-		var location = Vector2(-1, -1)
-		var attempts = 0;
-		find_random_place(mapSize)
+			room.load("res://sprites/" + chosen + '.png')	
+			for i in randi() % 4: 
+				room.rotate_90(CLOCKWISE)		
+		find_random_place(room)
+		
+
+
+func neighbours_floor(x,y):
+	var dirs = [Vector2(0, 1), Vector2(0, -1), Vector2(-1, 0), Vector2(1, 0), Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1), Vector2(-1, -1)]
+				
+	var valid = false
+	for dir in dirs:
+		if not (y + dir.y >= GRID_HEIGHT or x + dir.x >= GRID_WIDTH or y + dir.y < 0 or x + dir.x < 0):
+			var tile = grid[y + dir.y][x + dir.x];
+			if (tile.has('type') and tile.type == 'floor'):
+				valid = true
+	return valid
+				
 
 func _draw_map ():
+	var start = Time.get_ticks_msec()
 	var img = Image.create(GRID_WIDTH * _scale.x, GRID_HEIGHT * _scale.y, true, Image.FORMAT_RGBA8);
 	
 	for row in grid:
@@ -312,33 +390,158 @@ func _draw_map ():
 			elif (item.has('type') and item.has('position') and item.type == 'floor'):
 				for p_x in range(item.position.x * _scale.x, item.position.x * _scale.x + _scale.x):
 					for p_y in range(item.position.y * _scale.y, item.position.y * _scale.y + _scale.y):
-						img.set_pixel(p_x, p_y, Color.WHEAT);				
+						img.set_pixel(p_x, p_y, floorColor);				
 			elif(item.has('type') and item.type == 'wall'):
 				for p_x in range(item.position.x * _scale.x, item.position.x * _scale.x + _scale.x):
 					for p_y in range(item.position.y * _scale.y, item.position.y * _scale.y + _scale.y):
-						img.set_pixel(p_x, p_y, Color.BLACK);				
+						img.set_pixel(p_x, p_y, floorColor.darkened(0.4));				
 
 	var floorMapTexture = ImageTexture.create_from_image(img)
 	$UI/FloorMap.hide();
 	$UI/FloorMap.texture = floorMapTexture;
-	$UI/FloorMap.position = Vector2(10, 10)
-	$UI/FloorMap.scale = Vector2(0.8, 0.8)
+	$UI/FloorMap.position = Vector2(0, 0)
+	var _scale = (get_window().size.y / floorMapTexture.get_size().y);
+	$UI/FloorMap.scale = Vector2(_scale, _scale)
 	
+	var end = Time.get_ticks_msec()
+	print('Drawing in-game map, ', (end - start), ' ms.')
+	
+
+func _determine_wall_position ():
+	var start = Time.get_ticks_msec()
+	for x in GRID_WIDTH:
+		for y in GRID_HEIGHT: 
+			var tile = grid[y][x]
+			if tile.has("type") and tile.type == 'wall':
+				var dir = Vector2.ZERO;
+				var nWalls = 0
+				for i in range(-2, 3):
+					for j in range(-2, 3):
+						if (i + x >= 0 and i + x < GRID_WIDTH and j + y >= 0 and j + y < GRID_HEIGHT):
+							var neighbouring_tile = grid[y + j][x + i]
+							if neighbouring_tile.has('type') and neighbouring_tile.type == 'wall':
+								dir += Vector2(i, j)
+								nWalls += 1
+						else: 
+							dir += Vector2(i, j)
+							nWalls += 1
+				grid[y][x].wall_displacement = dir.normalized()
+				grid[y][x].crowdedness = nWalls
+			
+	var end = Time.get_ticks_msec()
+	print('Displacing wall positions, ', (end - start), ' ms.')
+	
+	
+				
+func draw_floor ():
+	
+	var start = Time.get_ticks_msec()
+	
+	var floorImage = Image.create(GRID_WIDTH*cell_size.x, GRID_HEIGHT*cell_size.y, true, Image.FORMAT_RGBA8)
+	
+
+		
+
+	var dirs = [Vector2(0, -1), Vector2(0, 1), Vector2(-1, 0), Vector2(1, 0)]
+	
+	for x in GRID_WIDTH:
+		for y in GRID_HEIGHT:
+			var actualCell = grid[y][x]
+			var rect = Rect2i(x*32,y*32, 32, 32)
+			if actualCell.has('accessible') and actualCell.accessible == true:	
+				if actualCell.has('type') and actualCell.type == 'wall':
+					floorImage.fill_rect(rect, wallColor)
+				else:
+					floorImage.fill_rect(rect, floorColor)
+
+	
+	
+	var ratio = 4;
+	var inv = 32/ratio;
+	
+	var s_grid = []
+	for y in GRID_WIDTH * ratio:
+		s_grid.append([])
+		for x in GRID_HEIGHT * ratio:
+			s_grid[y].append('')
+	
+	for x in GRID_WIDTH * ratio:
+		for y in GRID_HEIGHT * ratio:
+			s_grid[y][x] = grid[y/ratio][x/ratio].type
+					
+	for x in GRID_WIDTH * ratio:
+		for y in GRID_HEIGHT * ratio:
+			var current_cell = s_grid[y][x]
+			if(current_cell) != 'floor':
+				continue
+			var rect = Rect2i(x*inv,y*inv, inv, inv)
+			var f = floorImage.get_pixel(x*inv, y*inv)
+			for dir in dirs:
+				var pos = Vector2(x + dir.x, y + dir.y)
+				var within_bounds = pos.x >= 0 and pos.x < GRID_WIDTH*ratio and pos.y >= 0 and pos.y < GRID_HEIGHT*ratio
+				if within_bounds:
+					var next_to_wall = s_grid[pos.y][pos.x] == 'wall'					
+					var r = randi()%6 == 0
+					if next_to_wall and r:
+						floorImage.fill_rect(rect, wallColor)
+	
+	for x in GRID_WIDTH * ratio:
+		for y in GRID_HEIGHT * ratio:
+			var current_cell = s_grid[y][x]
+			if(current_cell) != 'floor':
+				continue
+			var rect = Rect2i(x*inv,y*inv, inv, inv)
+			var f = floorImage.get_pixel(x*inv, y*inv)
+			for dir in dirs:
+				var pos = Vector2(x + dir.x, y + dir.y)
+				var within_bounds = pos.x >= 0 and pos.x < GRID_WIDTH*ratio and pos.y >= 0 and pos.y < GRID_HEIGHT*ratio
+				if within_bounds:
+					var next_to_wall = s_grid[pos.y][pos.x] == 'wall'					
+					var r = randi()%6 == 0
+					if next_to_wall and r:
+						floorImage.fill_rect(rect, wallColor)
+
+	#for x in GRID_WIDTH * 32:
+		#for y in GRID_HEIGHT * 32:
+			#var rect = Rect2i(x*1,y*1, 1, 1)
+			#var f = floorImage.get_pixel(x*1, y*1)
+			#for dir in dirs:
+				#var n = Vector2(x, y)*1 + dir*1
+				#var p = floorImage.get_pixelv(n)
+#
+				#if p.is_equal_approx(wallColor) and f.is_equal_approx(floorColor):
+					#floorImage.fill_rect(rect, edgeColor)
+
+	
+	var floorTexture = ImageTexture.create_from_image(floorImage)
+	
+	$FloorGroup/FloorRect.texture = floorTexture
+	
+	var end = Time.get_ticks_msec()
+	print('Drawing floor picture, ', (end - start), ' ms.')
 	
 func _add_tiles ():
+	var start = Time.get_ticks_msec();
 	for row in grid:
 		for item in row: 
 			if (item.has('accessible') and item.accessible == false):
 				continue;
-			elif (item.has('type') and item.has('position') and item.type == 'floor'):
-				_add_floor(item.position)
-				#new_floor.position = Vector2(item.position.x * cell_size.x, item.position.y * cell_size.y)
 			elif(item.has('type') and item.type == 'wall'):
 				_add_wall(item.position)
+			#elif (item.has('type') and item.has('position') and item.type == 'floor'):
+				#_add_floor(item.position)
+				#new_floor.position = Vector2(item.position.x * cell_size.x, item.position.y * cell_size.y)
 				
 	possiblePlayerTiles.shuffle();
 	if(possiblePlayerTiles.size()):
 		_add_player(possiblePlayerTiles[0])
 		#_add_lava(possiblePlayerTiles[1])
 	
+	
+	var end = Time.get_ticks_msec();
+	print('Adding all tiles, ', (end - start), ' ms.')
+	
+	
+	
+
 	

@@ -1,11 +1,35 @@
-[gd_scene load_steps=7 format=3 uid="uid://dovsbgskx8e4o"]
+[gd_scene load_steps=11 format=3 uid="uid://dovsbgskx8e4o"]
 
 [ext_resource type="Script" path="res://main/generators/StartingArea.gd" id="1_70ae2"]
 [ext_resource type="PackedScene" uid="uid://cqcbkh53cbjwd" path="res://main/components/player/PlayerCharacter.tscn" id="2_lu18k"]
+[ext_resource type="Shader" path="res://main/components/shaders/GBShader.gdshader" id="2_t4ycn"]
 [ext_resource type="Script" path="res://main/generators/Button.gd" id="2_x0lga"]
 [ext_resource type="Script" path="res://main/generators/FloorMapToggle.gd" id="3_8ghgq"]
-[ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://main/components/shaders/GB_Material.tres" id="3_n08qu"]
+[ext_resource type="Script" path="res://main/generators/BG.gd" id="3_i58k8"]
 [ext_resource type="Script" path="res://main/generators/Reload.gd" id="4_md4i0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7hiji"]
+shader = ExtResource("2_t4ycn")
+shader_parameter/lightest = Color(0.886275, 0.898039, 0.85098, 1)
+shader_parameter/light = Color(0.835294, 0.654902, 0.329412, 1)
+shader_parameter/dark = Color(0.647059, 0.176471, 0.235294, 1)
+shader_parameter/darkest = Color(0, 0, 0, 1)
+shader_parameter/lightestThreshold = 0.23
+shader_parameter/lightThreshold = 0.69
+shader_parameter/darkThreshold = 0.95
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_inclm"]
+noise_type = 3
+frequency = 0.0186
+fractal_type = 3
+fractal_lacunarity = 2.08165e-12
+fractal_gain = 0.08
+fractal_weighted_strength = 1.0
+fractal_ping_pong_strength = 7.26
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ve456"]
+in_3d_space = true
+noise = SubResource("FastNoiseLite_inclm")
 
 [node name="Starting Area" type="CanvasLayer"]
 follow_viewport_enabled = true
@@ -14,16 +38,24 @@ script = ExtResource("1_70ae2")
 [node name="BG" type="CanvasLayer" parent="."]
 layer = 0
 
-[node name="ColorRect" type="ColorRect" parent="BG"]
+[node name="BG" type="TextureRect" parent="BG"]
+material = SubResource("ShaderMaterial_7hiji")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.0509804, 0.0509804, 0.0509804, 1)
+texture = SubResource("NoiseTexture2D_ve456")
+script = ExtResource("3_i58k8")
 
 [node name="FloorGroup" type="CanvasGroup" parent="."]
+light_mask = 4
 y_sort_enabled = true
+
+[node name="FloorRect" type="TextureRect" parent="FloorGroup"]
+light_mask = 4
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="StepGroup" type="CanvasGroup" parent="."]
 
@@ -42,7 +74,6 @@ transform = Transform2D(1, 0, 0, 1, 2.08165e-12, 2.08165e-12)
 
 [node name="FloorMap" type="TextureRect" parent="UI"]
 light_mask = 2
-material = ExtResource("3_n08qu")
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("3_8ghgq")

@@ -3,6 +3,8 @@ extends StaticBody2D
 enum Height {Low, Middle, High}
 @export var normalPosition = Vector2(0, 0)
 @export var noiseVal = 0.0
+@export var displacement_vector = Vector2.ZERO
+@export var crowdedness = 0
 @export_color_no_alpha var colorOne
 @export_color_no_alpha var colorTwo
 @export_color_no_alpha var colorThree
@@ -17,6 +19,26 @@ var h
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	WALL_WIDTH = remap(crowdedness, 0, 25, 20, 32)
+	
+	var occ = OccluderPolygon2D.new()
+	var poly: PackedVector2Array = []
+	var d = Vector2(32 - WALL_WIDTH, 32 - WALL_WIDTH)/2;
+	
+	var displace = Vector2i(d.x * displacement_vector);
+	
+	var yD = Vector2(0, 32 - WALL_WIDTH)/2
+	poly.append(Vector2(0, 0) + d - yD)
+	poly.append(Vector2(0, WALL_WIDTH) + d - yD)
+	poly.append(Vector2(WALL_WIDTH, WALL_WIDTH) + d - yD)
+	poly.append(Vector2(WALL_WIDTH, 0) + d - yD)
+	
+	occ.polygon = poly
+	occ.closed = true
+	
+	$Base.occluder = occ
+	position += Vector2(displace)
+	
 	img = Image.create(32, 64, true, Image.FORMAT_RGBA8)
 	
 	_defineWallHeight()
@@ -34,7 +56,7 @@ func _ready():
 	_construct_wall(h + WALL_WIDTH - s*2, 10, Vector2(WALL_WIDTH - s*2, WALL_WIDTH - h + s), false, 'VERTICAL');
 	
 	_construct_wall(WALL_WIDTH - s*2, 5, Vector2(s, WALL_WIDTH - h), true, 'HORIZONTAL');
-	_construct_wall(WALL_WIDTH - s*2, 5, Vector2(s, WALL_WIDTH*2 - h - s*2), true, 'HORIZONTAL');
+	_construct_wall(WALL_WIDTH - s*2, 5, Vector2(s, WALL_WIDTH*2 - h - s*2), false, 'HORIZONTAL');
 	
 
 	for i in randi_range(0, 2):
@@ -140,4 +162,4 @@ func _add_fade(_length: int, ammount: int, start: Vector2):
 	
 
 func _defineWallHeight():
-	h = int(remap(noiseVal, 0, 1, 8, 24))
+	h = int(remap(noiseVal, 0, 1, 4, 24))

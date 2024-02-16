@@ -19,7 +19,7 @@ boot_splash/bg_color=Color(0, 0, 0, 1)
 
 window/size/viewport_width=960
 window/size/viewport_height=864
-window/size/always_on_top=true
+window/size/resizable=false
 window/size/window_width_override=960
 window/size/window_height_override=864
 window/energy_saving/keep_screen_on=false
