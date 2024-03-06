@@ -32,8 +32,7 @@ func largest_of(a: int, b: int):
 	else:
 		return b
 
-func _ready():
-	
+func _ready():	
 	var from = Time.get_ticks_msec();
 	follow_viewport_enabled = true;
 	
@@ -473,22 +472,6 @@ func draw_floor ():
 					var r = randi()%6 == 0
 					if next_to_wall and r:
 						floorImage.fill_rect(rect, wallColor)
-	
-	#for x in GRID_WIDTH * ratio:
-		#for y in GRID_HEIGHT * ratio:
-			#var current_cell = s_grid[y][x]
-			#if(current_cell) != 'floor':
-				#continue
-			#var rect = Rect2i(x*inv,y*inv, inv, inv)
-			#var f = floorImage.get_pixel(x*inv, y*inv)
-			#for dir in dirs:
-				#var pos = Vector2(x + dir.x, y + dir.y)
-				#var within_bounds = pos.x >= 0 and pos.x < GRID_WIDTH*ratio and pos.y >= 0 and pos.y < GRID_HEIGHT*ratio
-				#if within_bounds:
-					#var next_to_wall = s_grid[pos.y][pos.x] == 'wall'					
-					#var r = randi()%6 == 0
-					#if next_to_wall and r:
-						#floorImage.fill_rect(rect, wallColor)
 
 	
 	var floorTexture = ImageTexture.create_from_image(floorImage)
@@ -506,9 +489,11 @@ func _add_tiles ():
 				continue;
 			elif(item.has('type') and item.type == 'wall'):
 				_add_wall(item.position)
-			#elif (item.has('type') and item.has('position') and item.type == 'floor'):
-				#_add_floor(item.position)
-				#new_floor.position = Vector2(item.position.x * cell_size.x, item.position.y * cell_size.y)
+			elif(randi()%12 == 0):
+				var smoke = preload('res://main/components/smoke/Smoke.tscn').instantiate()
+				print('placing smoke')
+				smoke.position = item.position * 32
+				$DrawGroup.add_child(smoke)
 				
 	possiblePlayerTiles.shuffle();
 	if(possiblePlayerTiles.size()):

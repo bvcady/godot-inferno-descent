@@ -6,7 +6,7 @@
 light_mask = 4
 script = ExtResource("1_siuwi")
 normalPosition = Vector2(1, 1)
-noiseVal = 0.605749
+noiseVal = 0.435096
 crowdedness = 1
 colorOne = Color(0.835294, 0.654902, 0.329412, 1)
 colorThree = Color(0.317647, 0.298039, 0.321569, 1)

@@ -13,6 +13,7 @@ var shadow_image: Image
 var narrowness = [];
 var nLength = 15;
 var dis = 2
+var deviation = Vector2.ZERO;
 
 @export var normalPosition = Vector2.ZERO 
 
@@ -29,6 +30,7 @@ func _ready():
 	for i in nLength:
 		narrowness.append(pow(dis+dis+1, 2)/1.5)
 	$"Main Camera".zoom = Vector2(3,3)
+
 	
 	
 	#
@@ -54,30 +56,44 @@ func _physics_process(delta):
 
 	if moving:
 		move_towards_target(delta)
-		update_animation()	
-
+		#update_animation()	
+	if not moving and $AnimatedSprite2D.animation == 'down':
+		$AnimatedSprite2D.animation = 'idle'
+		
 
 
 
 
 func handle_input():
 	if (not moving):
-		var direction = Vector2.ZERO
-		if Input.is_action_just_pressed("move_right"):
-			direction.x = 1 
-		elif Input.is_action_just_pressed("move_left"):
-			direction.x = -1
-		elif Input.is_action_just_pressed("move_down"):
-			direction.y = 1
-		elif Input.is_action_just_pressed("move_up"):
-			direction.y = -1
+		var input_direction = Vector2.ZERO
+		if Input.is_action_just_pressed("ui_right"):
+			$AnimatedSprite2D.animation = "right"			
+			$AnimatedSprite2D.flip_h = false	
+			input_direction.x = 1 
+		elif Input.is_action_just_pressed("ui_left"):
+			$AnimatedSprite2D.animation = "right"
+			$AnimatedSprite2D.flip_h = true			
+			input_direction.x = -1
+		elif Input.is_action_just_pressed("ui_down"):
+			$AnimatedSprite2D.animation = "down"						
+			input_direction.y = 1
+		elif Input.is_action_just_pressed("ui_up"):
+			$AnimatedSprite2D.animation = "up"						
+			input_direction.y = -1
+		
 		
 		emit_signal('health_decreased')
 		
-		if (direction != Vector2.ZERO):
+		if (input_direction != Vector2.ZERO):
 			if(current_floor && current_floor.has_method("_is_valid_move")):
-				var t_tile = round(position/cell_size) + direction
-				if current_floor._is_valid_move(t_tile):
+				var t_tile = normalPosition + input_direction
+				if deviation.length() != 0:
+					deviation = Vector2.ZERO
+					target_position = normalPosition*move_distance
+					moving = true
+				elif current_floor._is_valid_move(t_tile):
+					deviation = Vector2.ZERO
 					#var d = + Vector2(randf_range(-2.0, 2.0), randf_range(-3.0, 3.0));
 					var t_p = t_tile * move_distance;
 					target_position = round(t_p)	
@@ -85,6 +101,12 @@ func handle_input():
 					
 					check_narrowness(normalPosition)
 					moving = true
+				else: 
+					deviation = input_direction
+					var d_distance = Vector2.ONE*8
+					target_position = clamp(normalPosition * move_distance + deviation * d_distance, normalPosition * move_distance - d_distance, normalPosition * move_distance + d_distance)
+					moving = true
+					#update_animation(input_direction)
 
 
 		
@@ -124,19 +146,8 @@ func check_narrowness(_pos: Vector2):
 
 
 
-func update_animation():
-	if moving:
-		var direction = (target_position - position).normalized()
-		if direction.x != 0 && abs(direction.x) > abs(direction.y):
-			$AnimatedSprite2D.animation = "right"
-			$AnimatedSprite2D.flip_h = direction.x < 0
-		else:
-			if(direction.y < 0 && abs(direction.y) > abs(direction.x)):
-				$AnimatedSprite2D.animation = 'up'
-			else: 
-				$AnimatedSprite2D.animation = "down"
-	else:
-		$AnimatedSprite2D.animation = 'idle'
+			
+
 
 func confine_to_screen_bounds():
 	var min_wall_distance = 0

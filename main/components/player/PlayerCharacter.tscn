@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cqcbkh53cbjwd"]
+[gd_scene load_steps=21 format=3 uid="uid://cqcbkh53cbjwd"]
 
 [ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://main/components/shaders/GB_Material.tres" id="1_bdbw6"]
 [ext_resource type="Script" path="res://main/components/player/Player.gd" id="2_6x6eg"]
@@ -128,7 +128,10 @@ animations = [{
 "speed": 8.0
 }]
 
-[node name="PlayerCharacter" type="Node2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_7lg3c"]
+radius = 7.0
+
+[node name="PlayerCharacter" type="Area2D"]
 z_as_relative = false
 material = ExtResource("1_bdbw6")
 position = Vector2(2.08165e-12, 8)
@@ -193,3 +196,7 @@ zoomed = true
 visible = false
 position = Vector2(24, -23)
 texture = ExtResource("7_8dbrm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(16, 10)
+shape = SubResource("CircleShape2D_7lg3c")

@@ -34,6 +34,8 @@ func _ready():
 	
 	WALL_HEIGHT = _defineWallHeight()
 	draw_wall(WALL_WIDTH, WALL_HEIGHT, isCornerTile)
+	#if isCornerTile:
+		#draw_wall(12, 4)
 	
 func draw_wall(width: int, height: int, shouldDisplace: bool = false):
 	# total occupying dimensions of the wall	
@@ -92,7 +94,8 @@ func draw_wall(width: int, height: int, shouldDisplace: bool = false):
 	
 
 	for i in randi_range(0, 1):
-		_add_fade(randi_range(4, 10), randi_range(1, 3), Vector2(s + randi_range(3, dim.x - 10 - s), dim.x*2 - h - s*2), img)
+		var fade_l = randi_range(4, 10)
+		_add_fade(randi_range(4, 10), randi_range(1, 3), Vector2(s + randi_range(0, dim.x - s*2 - fade_l), dim.x - s*2), img)
 	
 	
 	var wall = TextureRect.new();

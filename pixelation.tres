@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cdcqux6152knm"]
+
+[ext_resource type="Shader" path="res://pixelation.gdshader" id="1_0j3sx"]
+
+[resource]
+shader = ExtResource("1_0j3sx")
