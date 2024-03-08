@@ -1,54 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://dlni80vqsmbcc"]
+[gd_scene load_steps=3 format=3 uid="uid://dlni80vqsmbcc"]
 
 [ext_resource type="Script" path="res://main/components/smoke/Smoke.gd" id="1_xldjg"]
-
-[sub_resource type="Shader" id="Shader_eis2i"]
-code = "shader_type canvas_item;
-
-uniform vec4 lightest: source_color = vec4(0.961, 0.980, 0.937, 1.0);
-uniform vec4 light: source_color = vec4(0.549, 0.749, 0.039, 1.0);
-uniform vec4 dark: source_color = vec4(0.18, 0.451, 0.125, 1.0);
-uniform vec4 darkest: source_color = vec4(0.0, 0.247, 0.0, 1.0);
-uniform float lightestThreshold = 0.1;
-uniform float lightThreshold = 0.3;
-uniform float darkThreshold = 0.6;
-
-void fragment(){
-	COLOR = texture(TEXTURE, UV);
-	
-	float rgb_avg = (COLOR.r + COLOR.g + COLOR.b) / 3.0;
-	if (rgb_avg < lightestThreshold) {
-		COLOR = vec4(darkest.x, darkest.y, darkest.z, COLOR.a);
-	} else if (rgb_avg < lightThreshold) {
-		COLOR = vec4(dark.x, dark.y, dark.z, COLOR.a);
-	} else if (rgb_avg < darkThreshold) {
-		COLOR = vec4(light.x, light.y, light.z, COLOR.a);
-	} else {
-		COLOR = vec4(lightest.x, lightest.y, lightest.z, COLOR.a);
-	}
-}"
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_plsr0"]
-shader = SubResource("Shader_eis2i")
-shader_parameter/lightest = Color(0, 0.701961, 0.639216, 0.631373)
-shader_parameter/light = Color(0.835294, 0.654902, 0.329412, 1)
-shader_parameter/dark = Color(0.317647, 0.298039, 0.321569, 1)
-shader_parameter/darkest = Color(0, 0, 0, 1)
-shader_parameter/lightestThreshold = 0.25
-shader_parameter/lightThreshold = 0.5
-shader_parameter/darkThreshold = 0.8
+[ext_resource type="Material" uid="uid://bmbb0i5p52ehq" path="res://main/components/smoke/SmokeShader.tres" id="2_y0cko"]
 
 [node name="Smoke" type="Node2D"]
-material = SubResource("ShaderMaterial_plsr0")
+material = ExtResource("2_y0cko")
 script = ExtResource("1_xldjg")
 
 [node name="CanvasGroup" type="CanvasGroup" parent="."]
-self_modulate = Color(1, 1, 1, 0.631373)
+self_modulate = Color(0.462745, 0.0980392, 0.0745098, 0.458824)
 use_parent_material = true
 
 [node name="SmokeParticles" type="GPUParticles2D" parent="CanvasGroup"]
 use_parent_material = true
 position = Vector2(16, 16)
 amount = 40
-randomness = 0.5
+preprocess = 5.0
 collision_base_size = 4.0

@@ -1,19 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://c8p4pwqc7smi3"]
+[gd_scene load_steps=2 format=3 uid="uid://c8p4pwqc7smi3"]
 
 [ext_resource type="PackedScene" uid="uid://dovsbgskx8e4o" path="res://main/generators/StartingArea.tscn" id="1_at6wu"]
-[ext_resource type="PackedScene" uid="uid://5a7vnghd0mvm" path="res://main/guis/player_info.tscn" id="1_t3nay"]
-[ext_resource type="Script" path="res://main/components/player/Health.gd" id="3_ln8j2"]
 
 [node name="Level" type="Node2D"]
 
 [node name="Starting Area" parent="." instance=ExtResource("1_at6wu")]
-
-[node name="Health" type="Node" parent="."]
-script = ExtResource("3_ln8j2")
-health = 5
-
-[node name="HUD" type="CanvasLayer" parent="."]
-
-[node name="PlayerInfo" parent="HUD" instance=ExtResource("1_t3nay")]
-light_mask = 512
-visibility_layer = 512

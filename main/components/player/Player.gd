@@ -15,6 +15,8 @@ var nLength = 15;
 var dis = 2
 var deviation = Vector2.ZERO;
 
+var max_health = 7;
+
 @export var normalPosition = Vector2.ZERO 
 
 signal health_decreased
@@ -31,9 +33,6 @@ func _ready():
 		narrowness.append(pow(dis+dis+1, 2)/1.5)
 	$"Main Camera".zoom = Vector2(3,3)
 
-	
-	
-	#
 func _input(event):
 	#if event is InputEventMouseButton && event.is_released():
 		#if ($"Main Camera".zoomed == true):
@@ -82,9 +81,6 @@ func handle_input():
 			$AnimatedSprite2D.animation = "up"						
 			input_direction.y = -1
 		
-		
-		emit_signal('health_decreased')
-		
 		if (input_direction != Vector2.ZERO):
 			if(current_floor && current_floor.has_method("_is_valid_move")):
 				var t_tile = normalPosition + input_direction
@@ -119,6 +115,7 @@ func move_towards_target(delta):
 		position += round(4*(move_step * direction))/4
 	else:
 		position = target_position
+		decrease_health(1)
 		moving = false
 			
 	position.round()
@@ -162,3 +159,13 @@ func start(floor_size):
 	else:
 		screen_size = Vector2(400, 300)
 	show()
+
+
+func decrease_health (amount: int):
+	var h_bar = $HealthBar;
+	var prev_health = h_bar.value;
+	if(prev_health - amount <= 0):
+		return get_tree().reload_current_scene();
+	else: 
+		h_bar.value = prev_health - amount;
+	pass

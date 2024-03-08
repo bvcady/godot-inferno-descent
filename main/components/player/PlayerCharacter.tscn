@@ -140,7 +140,7 @@ script = ExtResource("2_6x6eg")
 [node name="ShadowLight" type="PointLight2D" parent="."]
 light_mask = 7
 visibility_layer = 3
-position = Vector2(16, 16)
+position = Vector2(20, 16)
 color = Color(0.901961, 0.901961, 0.643137, 1)
 energy = 0.33
 range_layer_max = 12
@@ -200,3 +200,22 @@ texture = ExtResource("7_8dbrm")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(16, 10)
 shape = SubResource("CircleShape2D_7lg3c")
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+show_behind_parent = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 3.0
+offset_top = -3.0
+offset_right = 7.0
+offset_bottom = 9.0
+grow_horizontal = 2
+grow_vertical = 2
+max_value = 7.0
+step = 1.0
+value = 7.0
+fill_mode = 3
+show_percentage = false

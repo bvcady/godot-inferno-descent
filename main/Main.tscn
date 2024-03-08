@@ -1,49 +1,89 @@
-[gd_scene load_steps=9 format=3 uid="uid://mm6uobet65dc"]
+[gd_scene load_steps=11 format=3 uid="uid://mm6uobet65dc"]
 
 [ext_resource type="Script" path="res://main/Main.gd" id="2"]
-[ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://main/components/shaders/GB_Material.tres" id="2_ad7fh"]
 [ext_resource type="Texture2D" uid="uid://17te8mp71vgb" path="res://sprites/story-images.png" id="3_b1g3t"]
-[ext_resource type="Texture2D" uid="uid://e8jmtjuhtntl" path="res://sprites/logo_blurred.png" id="4_fli6t"]
+[ext_resource type="Texture2D" uid="uid://cqxwm86y1wbol" path="res://sprites/logo_blurred_v2.png" id="3_ked5i"]
+[ext_resource type="Material" uid="uid://bcd7lerx103yw" path="res://main/LogoShader.tres" id="3_wki2k"]
 [ext_resource type="Script" path="res://main/start_screen/MainMenu.gd" id="5_mbp4b"]
 [ext_resource type="Theme" uid="uid://blj6w81baf3sg" path="res://main/default_theme.tres" id="6_6iknv"]
 
-[sub_resource type="Shader" id="Shader_y1ko5"]
+[sub_resource type="Shader" id="Shader_pgxmy"]
 code = "shader_type canvas_item;
 
 uniform vec4 lightest: source_color = vec4(0.961, 0.980, 0.937, 1.0);
 uniform vec4 light: source_color = vec4(0.549, 0.749, 0.039, 1.0);
 uniform vec4 dark: source_color = vec4(0.18, 0.451, 0.125, 1.0);
 uniform vec4 darkest: source_color = vec4(0.0, 0.247, 0.0, 1.0);
-uniform float lightestThreshold = 0.1;
-uniform float lightThreshold = 0.3;
-uniform float darkThreshold = 0.6;
+uniform float darkestThreshold = 0.1;
+uniform float darkThreshold = 0.3;
+uniform float lightThreshold = 0.6;
+
+uniform float d = 6.0;
+uniform int pixel_size : hint_range(1, 100) = 2;
+
+uniform sampler3D noise : repeat_enable;
+
 
 void fragment(){
-	COLOR = texture(TEXTURE, UV);
+
+	vec2 pos = UV / TEXTURE_PIXEL_SIZE;
+	vec2 square = vec2(float(pixel_size), float(pixel_size));
+	vec2 top_left = floor(pos / square) * square;
+	vec4 total = vec4(0., 0., 0., 0.);
+	for (int x = int(top_left.x); x < int(top_left.x) + pixel_size; x++){
+		for (int y = int(top_left.y); y < int(top_left.y) + pixel_size; y++){
+			total += texture(TEXTURE, vec2(float(x), float(y)) * TEXTURE_PIXEL_SIZE);
+		}
+	}
+	
+	COLOR = total / float(pixel_size * pixel_size);
+	
+	vec4 DISCOLORED;
+	float n_lightest = (-0.5 + texture(noise, vec3(top_left.x, top_left.y, 0.0 + TIME/100.0)).r)/d;
+	float n_light = (-0.5 + texture(noise, vec3(top_left.x, top_left.y, 1.0 + TIME/100.0)).r)/d;
+	float n_dark = (-0.5 + texture(noise, vec3(top_left.x, top_left.y, 2.0 + TIME/100.0)).r)/d;
 	
 	float rgb_avg = (COLOR.r + COLOR.g + COLOR.b) / 3.0;
-	if (rgb_avg < lightestThreshold) {
-		COLOR = vec4(darkest.x, darkest.y, darkest.z, COLOR.a);
-	} else if (rgb_avg < lightThreshold) {
-		COLOR = vec4(dark.x, dark.y, dark.z, COLOR.a);
-	} else if (rgb_avg < darkThreshold) {
-		COLOR = vec4(light.x, light.y, light.z, COLOR.a);
+	
+	if (rgb_avg < darkestThreshold + n_lightest) {
+		COLOR = darkest;
+	} else if (rgb_avg < darkThreshold + n_light) {
+		COLOR = dark;
+	} else if (rgb_avg < lightThreshold + n_dark) {
+		COLOR = light;
 	} else {
-		COLOR = vec4(lightest.x, lightest.y, lightest.z, 0);
+		COLOR = vec4(lightest.x, lightest.y, lightest.z, COLOR.a);
 	}
+	
+	
+	//COLOR = DISCOLORED;
+	
 }"
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tw2dj"]
-shader = SubResource("Shader_y1ko5")
-shader_parameter/lightest = Color(0.960784, 0.980392, 0.937255, 1)
-shader_parameter/light = Color(0.952941, 0.65098, 0.745098, 1)
-shader_parameter/dark = Color(0.709804, 0.164706, 0.454902, 1)
-shader_parameter/darkest = Color(0.129412, 0, 0.0627451, 1)
-shader_parameter/lightestThreshold = 0.35
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qxvoc"]
+noise_type = 3
+frequency = 0.0541
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_inows"]
+seamless = true
+seamless_blend_skirt = 0.159
+noise = SubResource("FastNoiseLite_qxvoc")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nlvrj"]
+shader = SubResource("Shader_pgxmy")
+shader_parameter/lightest = Color(0.886275, 0.898039, 0.85098, 1)
+shader_parameter/light = Color(0.835294, 0.654902, 0.329412, 1)
+shader_parameter/dark = Color(0.537255, 0.243137, 0.156863, 1)
+shader_parameter/darkest = Color(0, 0, 0, 1)
+shader_parameter/darkestThreshold = 0.18
+shader_parameter/darkThreshold = 0.29
 shader_parameter/lightThreshold = 0.61
-shader_parameter/darkThreshold = 0.57
+shader_parameter/d = 6.0
+shader_parameter/pixel_size = 1
+shader_parameter/noise = SubResource("NoiseTexture3D_inows")
 
 [node name="MainScene" type="Node2D"]
+scale = Vector2(4, 4)
 script = ExtResource("2")
 
 [node name="MainMenuCanvas" type="CanvasLayer" parent="."]
@@ -52,64 +92,58 @@ offset = Vector2(2.08165e-12, 2.08165e-12)
 transform = Transform2D(1, 0, 0, 1, 2.08165e-12, 2.08165e-12)
 
 [node name="ColorRect" type="ColorRect" parent="MainMenuCanvas"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -148.0
-offset_right = 200.0
-offset_bottom = 152.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.0509804, 0.0509804, 0.0509804, 1)
-
-[node name="Vulcano" type="TextureRect" parent="MainMenuCanvas"]
-material = ExtResource("2_ad7fh")
-clip_contents = true
-custom_minimum_size = Vector2(128, 128)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -64.0
-offset_top = -96.0
-offset_right = 64.0002
-offset_bottom = 32.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("3_b1g3t")
-expand_mode = 1
-stretch_mode = 3
-
-[node name="Logo" type="TextureRect" parent="MainMenuCanvas"]
-material = SubResource("ShaderMaterial_tw2dj")
-clip_contents = true
-custom_minimum_size = Vector2(128, 128)
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -64.0
-offset_top = -3.0
-offset_right = 64.0
-offset_bottom = 125.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("4_fli6t")
-expand_mode = 1
-stretch_mode = 3
-
-[node name="MainMenu" type="Control" parent="MainMenuCanvas"]
-layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Vulcano" type="TextureRect" parent="MainMenuCanvas"]
+material = SubResource("ShaderMaterial_nlvrj")
+clip_contents = true
+custom_minimum_size = Vector2(128, 128)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -186.0
+offset_top = -239.0
+offset_right = -58.0
+offset_bottom = -111.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(4.36, 4.36)
+texture = ExtResource("3_b1g3t")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="Logo" type="TextureRect" parent="MainMenuCanvas"]
+material = ExtResource("3_wki2k")
+clip_contents = true
+offset_right = 130.0
+offset_bottom = 78.0
+scale = Vector2(3.22, 3.22)
+texture = ExtResource("3_ked5i")
+expand_mode = 1
+stretch_mode = 3
+
+[node name="MainMenu" type="Control" parent="MainMenuCanvas"]
+modulate = Color(0.721569, 0.4, 0.215686, 1)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 50.0
+offset_top = 210.0
+offset_right = -796.47
+offset_bottom = -553.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(2, 2)
+size_flags_horizontal = 4
+size_flags_vertical = 3
 script = ExtResource("5_mbp4b")
 
 [node name="MarginContainer" type="MarginContainer" parent="MainMenuCanvas/MainMenu"]

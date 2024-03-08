@@ -1,13 +1,37 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dusbgjjj3st3h"]
 
-[ext_resource type="Shader" path="res://main/components/shaders/GBShader.gdshader" id="1_83wfu"]
+[sub_resource type="Shader" id="Shader_x6rcp"]
+code = "shader_type canvas_item;
+
+uniform vec4 lightest: source_color = vec4(0.961, 0.980, 0.937, 1.0);
+uniform vec4 light: source_color = vec4(0.549, 0.749, 0.039, 1.0);
+uniform vec4 dark: source_color = vec4(0.18, 0.451, 0.125, 1.0);
+uniform vec4 darkest: source_color = vec4(0.0, 0.247, 0.0, 1.0);
+uniform float lightestThreshold = 0.1;
+uniform float lightThreshold = 0.3;
+uniform float darkThreshold = 0.6;
+
+void fragment(){
+	COLOR = texture(TEXTURE, UV);
+	
+	float rgb_avg = (COLOR.r + COLOR.g + COLOR.b) / 3.0;
+	if (rgb_avg < lightestThreshold) {
+		COLOR = vec4(darkest.x, darkest.y, darkest.z, COLOR.a);
+	} else if (rgb_avg < lightThreshold) {
+		COLOR = vec4(dark.x, dark.y, dark.z, COLOR.a);
+	} else if (rgb_avg < darkThreshold) {
+		COLOR = vec4(light.x, light.y, light.z, COLOR.a);
+	} else {
+		COLOR = vec4(lightest.x, lightest.y, lightest.z, COLOR.a);
+	}
+}"
 
 [resource]
-shader = ExtResource("1_83wfu")
-shader_parameter/lightest = Color(0.901961, 0.901961, 0.643137, 1)
+shader = SubResource("Shader_x6rcp")
+shader_parameter/lightest = Color(0.886275, 0.898039, 0.85098, 1)
 shader_parameter/light = Color(0.835294, 0.654902, 0.329412, 1)
-shader_parameter/dark = Color(0.317647, 0.298039, 0.321569, 1)
+shader_parameter/dark = Color(0.721569, 0.4, 0.215686, 1)
 shader_parameter/darkest = Color(0, 0, 0, 1)
-shader_parameter/lightestThreshold = 0.25
-shader_parameter/lightThreshold = 0.5
-shader_parameter/darkThreshold = 0.8
+shader_parameter/lightestThreshold = 0.41
+shader_parameter/lightThreshold = 0.54
+shader_parameter/darkThreshold = 0.7

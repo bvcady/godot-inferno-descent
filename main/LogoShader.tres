@@ -1,0 +1,76 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://bcd7lerx103yw"]
+
+[sub_resource type="Shader" id="Shader_pgxmy"]
+code = "shader_type canvas_item;
+
+uniform vec4 lightest: source_color = vec4(0.961, 0.980, 0.937, 1.0);
+uniform vec4 light: source_color = vec4(0.549, 0.749, 0.039, 1.0);
+uniform vec4 dark: source_color = vec4(0.18, 0.451, 0.125, 1.0);
+uniform vec4 darkest: source_color = vec4(0.0, 0.247, 0.0, 1.0);
+uniform float darkestThreshold = 0.1;
+uniform float darkThreshold = 0.3;
+uniform float lightThreshold = 0.6;
+
+uniform float d = 6.0;
+uniform int pixel_size : hint_range(1, 100) = 2;
+
+uniform sampler3D noise : repeat_enable;
+
+
+void fragment(){
+
+	vec2 pos = UV / TEXTURE_PIXEL_SIZE;
+	vec2 square = vec2(float(pixel_size), float(pixel_size));
+	vec2 top_left = floor(pos / square) * square;
+	vec4 total = vec4(0., 0., 0., 0.);
+	for (int x = int(top_left.x); x < int(top_left.x) + pixel_size; x++){
+		for (int y = int(top_left.y); y < int(top_left.y) + pixel_size; y++){
+			total += texture(TEXTURE, vec2(float(x), float(y)) * TEXTURE_PIXEL_SIZE);
+		}
+	}
+	
+	COLOR = total / float(pixel_size * pixel_size);
+	
+	vec4 DISCOLORED;
+	float n_lightest = (-0.5 + texture(noise, vec3(top_left.x, top_left.y, 0.0 + TIME/100.0)).r)/d;
+	float n_light = (-0.5 + texture(noise, vec3(top_left.x, top_left.y, 1.0 + TIME/100.0)).r)/d;
+	float n_dark = (-0.5 + texture(noise, vec3(top_left.x, top_left.y, 2.0 + TIME/100.0)).r)/d;
+	
+	float rgb_avg = (COLOR.r + COLOR.g + COLOR.b) / 3.0;
+	
+	if (rgb_avg < darkestThreshold + n_lightest) {
+		COLOR = darkest;
+	} else if (rgb_avg < darkThreshold + n_light) {
+		COLOR = dark;
+	} else if (rgb_avg < lightThreshold + n_dark) {
+		COLOR = light;
+	} else {
+		COLOR = vec4(lightest.x, lightest.y, lightest.z, COLOR.a);
+	}
+	
+	
+	//COLOR = DISCOLORED;
+	
+}"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qxvoc"]
+noise_type = 3
+frequency = 0.0541
+
+[sub_resource type="NoiseTexture3D" id="NoiseTexture3D_inows"]
+seamless = true
+seamless_blend_skirt = 0.159
+noise = SubResource("FastNoiseLite_qxvoc")
+
+[resource]
+shader = SubResource("Shader_pgxmy")
+shader_parameter/lightest = Color(0, 0, 0, 1)
+shader_parameter/light = Color(0.537255, 0.243137, 0.156863, 1)
+shader_parameter/dark = Color(0, 0, 0, 1)
+shader_parameter/darkest = Color(0.835294, 0.654902, 0.329412, 1)
+shader_parameter/darkestThreshold = 0.41
+shader_parameter/darkThreshold = 0.69
+shader_parameter/lightThreshold = 0.89
+shader_parameter/d = 2.4
+shader_parameter/pixel_size = 1
+shader_parameter/noise = SubResource("NoiseTexture3D_inows")
