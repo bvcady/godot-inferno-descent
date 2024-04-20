@@ -1,8 +1,7 @@
-[gd_scene load_steps=21 format=3 uid="uid://cqcbkh53cbjwd"]
+[gd_scene load_steps=20 format=3 uid="uid://cqcbkh53cbjwd"]
 
 [ext_resource type="Material" uid="uid://dusbgjjj3st3h" path="res://main/components/shaders/GB_Material.tres" id="1_bdbw6"]
 [ext_resource type="Script" path="res://main/components/player/Player.gd" id="2_6x6eg"]
-[ext_resource type="Texture2D" uid="uid://dlgqx6k1lshat" path="res://main/components/player/LightGradient.tres" id="4_i30td"]
 [ext_resource type="Texture2D" uid="uid://dm1hqp28yhm4u" path="res://sprites/new-sprite-player.png" id="5_efgsr"]
 [ext_resource type="Script" path="res://main/components/player/Main Camera.gd" id="6_u7tcu"]
 [ext_resource type="Texture2D" uid="uid://dr6h7br27rdhn" path="res://sprites/perilsndragons-8x.png" id="7_8dbrm"]
@@ -153,22 +152,21 @@ shadow_item_cull_mask = 2
 texture = SubResource("GradientTexture2D_qkojx")
 texture_scale = 0.73
 
-[node name="SpriteLight" type="PointLight2D" parent="."]
-visible = false
-position = Vector2(16, 11)
-scale = Vector2(0.75, 1)
-skew = -0.020944
-energy = 1.01
-blend_mode = 2
+[node name="ShadowLight2" type="PointLight2D" parent="."]
+light_mask = 7
+visibility_layer = 3
+position = Vector2(16, 10)
+energy = 0.74
 range_layer_max = 12
+range_item_cull_mask = 7
+shadow_color = Color(0, 0, 0, 1)
 shadow_filter = 2
-shadow_filter_smooth = 3.4
-texture = ExtResource("4_i30td")
-offset = Vector2(2.08165e-12, 11)
-texture_scale = 1.43
+shadow_filter_smooth = 0.8
+shadow_item_cull_mask = 2
+texture = SubResource("GradientTexture2D_qkojx")
+texture_scale = 0.68
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-light_mask = 0
 z_as_relative = false
 y_sort_enabled = true
 use_parent_material = true

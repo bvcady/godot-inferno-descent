@@ -151,7 +151,7 @@ func _construct_wall(length: int, divisions: int, start: Vector2, mirrored: bool
 		for seg in wall_segments:
 			var prefColor = colorTwo;
 			if d == 1 and randi() % 5 == 1: 
-				prefColor = colorTwo.lightened(0.2)
+				prefColor = colorFour
 			for y in range(_y,  _y + seg):
 				img.set_pixel(d + start.x, y + start.y, prefColor)
 			_y += seg
@@ -188,7 +188,7 @@ func _add_fade(_length: int, ammount: int, start: Vector2, img: Image):
 		for i in length:
 			var prefColor = colorOne
 			if (i % 2 == 1): 
-				prefColor = colorFour
+				prefColor = colorTwo
 			img.set_pixel(start.x + i + iteration, start.y + iteration + deltaY, prefColor);
 		length -= 2;
 		iteration += 1;	

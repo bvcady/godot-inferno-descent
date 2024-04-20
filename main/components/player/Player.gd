@@ -115,7 +115,7 @@ func move_towards_target(delta):
 		position += round(4*(move_step * direction))/4
 	else:
 		position = target_position
-		decrease_health(1)
+		#decrease_health(1)
 		moving = false
 			
 	position.round()

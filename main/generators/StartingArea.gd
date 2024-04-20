@@ -17,9 +17,12 @@ var n_rooms = 1
 var endGoal = Vector2(0, 0);
 var max_attempts = 10
 
-var floorColor = Color.from_string('#524c52', Color.BURLYWOOD)
-var wallColor = Color(floorColor.darkened(0.1))
-var edgeColor = Color.from_string('#000000', Color.BROWN)
+@export var floorColor = Color.BLACK;
+var wallColor = floorColor;
+@export var edgeColor = Color.BLACK;
+
+#var floorColor = Color.from_string('#524c52', Color.BURLYWOOD)
+#var wallColor = Color(floorColor.darkened(0.1))
 
 var dirs = [Vector2(0, -1), Vector2(0, 1), Vector2(-1, 0), Vector2(1, 0)]
 
@@ -33,6 +36,7 @@ func largest_of(a: int, b: int):
 		return b
 
 func _ready():	
+	wallColor = floorColor.darkened(0.1);
 	var from = Time.get_ticks_msec();
 	follow_viewport_enabled = true;
 	
@@ -193,12 +197,12 @@ func _add_lava(pos):
 	lava.position = pos*cell_size
 	$FloorGroup.add_child(lava)
 	
-func _add_floor(pos, _color: Color = Color.TRANSPARENT):
-	var floor = preload("res://main/components/floor/Floor.tscn").instantiate()
-	floor.position = pos*cell_size
-	floor.color = _color
-	floor.noiseVal = getNormalizedNoise2d(wallNoise, pos)
-	$FloorGroup.add_child(floor)
+#func _add_floor(pos, _color: Color = Color.TRANSPARENT):
+	#var floor = preload("res://main/components/floor/Floor.tscn").instantiate()
+	#floor.position = pos*cell_size
+	#floor.color = _color
+	#floor.noiseVal = getNormalizedNoise2d(wallNoise, pos)
+	#$FloorGroup.add_child(floor)
 	
 func _add_wall(pos):
 	var wall = preload("res://main/components/wall/DynamicWall.tscn").instantiate()
@@ -216,7 +220,6 @@ func _add_wall(pos):
 	
 	$DrawGroup.add_child(wall)
 	
-	#_add_floor(pos, Color.from_string('#761913', Color.INDIAN_RED))
 	
 func _add_player(initial_position):
 	var player = $DrawGroup/PlayerCharacter
@@ -489,11 +492,14 @@ func _add_tiles ():
 				continue;
 			elif(item.has('type') and item.type == 'wall'):
 				_add_wall(item.position)
-			elif(randi()%12 == 0):
+			elif(randi()%80 == 0):
 				var smoke = preload('res://main/components/smoke/Smoke.tscn').instantiate()
-				print('placing smoke')
-				smoke.position = item.position * 32
+				var lava = preload("res://main/components/lava/Lava.tscn").instantiate()
+				#print('placing smoke')
+				smoke.position = item.position * 32 - Vector2(0, -4)
 				$DrawGroup.add_child(smoke)
+				lava.position = item.position * 32
+				$FloorGroup.add_child(lava)
 				
 	possiblePlayerTiles.shuffle();
 	if(possiblePlayerTiles.size()):
